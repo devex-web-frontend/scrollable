@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<title>Scrollable e2e test</title>
+	<link rel="stylesheet" href="../css/test.css"/>
+</head>
+<body>
+<div id="test" class="wrapper test-class test-class-2 test-class-maxHeight">
+	<h2>Justice league</h2>
+	<ul>
+		<li>Superman</li>
+		<li>Batman</li>
+		<li>Wonder Woman</li>
+		<li>Flash</li>
+		<li>Green Lantern</li>
+		<li>Aquaman</li>
+		<li>Martian Manhunter</li>
+		<li>Green Arrow</li>
+		<li>Captain Marvel</li>
+		<li>Black Canary</li>
+		<li>the Atom</li>
+		<li>Hawkman</li>
+	</ul>
+	<h2>Avengers</h2>
+	<ul>
+		<li>Thor</li>
+		<li>Captain America</li>
+		<li>Hulk</li>
+		<li>Iron Man</li>
+		<li>Black Widow</li>
+		<li>Hawkeye</li>
+	</ul>
+</div>
+<script src="../../../lib/dxjs/src/dx.core.js"></script>
+<script src="../../../lib/dxjs/src/dx.dom.js"></script>
+<script src="../../../lib/dxjs/src/dx.measure.js"></script>
+<script src="../../../lib/dxjs/src/dx.event.js"></script>
+<script src="../../../src/js/scrollable.js"></script>
+<script type="text/javascript">
+
+
+	window.onload = function() {
+		window.testEl = document.getElementById('test');
+
+		new Scrollable(testEl);
+	}
+
+
+</script>
+</body>
+</html>

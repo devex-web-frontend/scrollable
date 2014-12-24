@@ -1,0 +1,68 @@
+@import "nib";
+
+global-reset();
+reset-html5();
+
+$scrollableScrollBarButtonSize = 20px;
+@import "../../../src/styl/scrollable.styl";
+
+body {
+	background: black;
+	font-family: arial, helvetica, sans-serif;
+}
+
+.scrollable--container::-webkit-scrollbar {
+	height: auto;
+	width: auto;
+	background: red;
+}
+
+.scrollbar {
+	background: silver;
+
+	&--track {
+		background: teal;
+	}
+	&--bar {
+		background: blue;
+	}
+	&--button {
+		background: brown;
+		border: none;
+
+		&-extreme {
+			background-color: red;
+		}
+	}
+}
+
+.wrapper {
+	width: 200px;
+	height: 200px;
+	background: wheat;
+}
+
+.row {
+	display: table-row;
+}
+
+.table {
+	width: 600px;
+	height: 200px;
+	display: table;
+
+	background: wheat;
+}
+
+
+.cell {
+	display: table-cell;
+	width: 50%;
+	height: 100%;
+	vertical-align: middle;
+}
+
+.test-class-maxHeight {
+	height: auto;
+	max-height: 200px;
+}
