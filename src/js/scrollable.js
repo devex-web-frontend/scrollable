@@ -2,7 +2,7 @@
  * @copyright Devexperts
  */
 
-var Scrollable = (function(DX, window, document, undefined) {
+window.Scrollable = (function(DX, window, document, undefined) {
 	'use strict';
 
 	var dom = DX.Dom,
