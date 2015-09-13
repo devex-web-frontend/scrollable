@@ -127,6 +127,17 @@ describe('Scrollable', function() {
 					scrollable.clientHeight === scrollableContainer.clientHeight;
 			},'waits when .scrollable--content`s content area will have same sizes like .scrollable element', 100);
 		});
+
+		it('shoukd keep style tag if it already exists', function() {
+			var styleElement = document.createElement('style'),
+				styles = "body{background:red}";
+
+			styleElement.appendChild(document.createTextNode(styles));
+			document.getElementsByTagName("head")[0].appendChild(styleElement);
+
+
+			new Scrollable(testEl);
+		})
 	});
 	describe('Event API', function() {
 		describe('Scrollable.E_CREATED', function() {

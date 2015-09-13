@@ -49,10 +49,26 @@ window.Scrollable = (function(DX, window, document, undefined) {
 			testElement.style.overflow = 'scroll';
 			testElement.style.opacity = 0;
 
+			(function addStyles() {
+				var styleElement = dom.createElement('style'),
+					styles = '.scrollable--container::-webkit-scrollbar {width:0; height: 0;}';
+
+				styleElement.appendChild(document.createTextNode(styles));
+				document.getElementsByTagName('head')[0].appendChild(styleElement);
+			})();
+
 			document.body.appendChild(testElement);
 			horizontalScrollSize = testElement.offsetHeight - testElement.clientHeight;
 			verticalScrollSize = testElement.offsetWidth - testElement.clientWidth;
 			document.body.removeChild(testElement);
+
+			(function removeStyles() {
+				var styleElementList = document.getElementsByTagName('style'),
+					styleElement = styleElementList[styleElementList.length - 1],
+					head = dom.getParent(styleElement);
+
+				head.removeChild(styleElement);
+			})();
 
 			return {
 				vertical: verticalScrollSize,
