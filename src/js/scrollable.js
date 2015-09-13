@@ -54,6 +54,7 @@ window.Scrollable = (function(DX, window, document, undefined) {
 					styles = '.scrollable--container::-webkit-scrollbar {width:0; height: 0;}';
 
 				styleElement.appendChild(document.createTextNode(styles));
+				styleElement.setAttribute('id', 'webkitStyleElement');
 				document.getElementsByTagName('head')[0].appendChild(styleElement);
 			})();
 
@@ -63,8 +64,7 @@ window.Scrollable = (function(DX, window, document, undefined) {
 			document.body.removeChild(testElement);
 
 			(function removeStyles() {
-				var styleElementList = document.getElementsByTagName('style'),
-					styleElement = styleElementList[styleElementList.length - 1],
+				var styleElement = document.getElementById('webkitStyleElement'),
 					head = dom.getParent(styleElement);
 
 				head.removeChild(styleElement);

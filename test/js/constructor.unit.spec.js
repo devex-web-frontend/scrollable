@@ -128,16 +128,22 @@ describe('Scrollable', function() {
 			},'waits when .scrollable--content`s content area will have same sizes like .scrollable element', 100);
 		});
 
+		it('should hide webkit scrollbar when calculate scrollbar sizes', function() {
+
+		});
+
 		it('shoukd keep style tag if it already exists', function() {
-			var styleElement = document.createElement('style'),
-				styles = "body{background:red}";
+			var styleElement = document.createElement('style');
 
-			styleElement.appendChild(document.createTextNode(styles));
-			document.getElementsByTagName("head")[0].appendChild(styleElement);
-
+			document.getElementsByTagName('head')[0].appendChild(styleElement);
+			styleElement = document.getElementsByTagName('style')[0];
+			styleElement.setAttribute('id', 'style1');
 
 			new Scrollable(testEl);
-		})
+
+			expect(document.getElementById('style1')).toBeTruthy('style element should be present');
+
+		});
 	});
 	describe('Event API', function() {
 		describe('Scrollable.E_CREATED', function() {
