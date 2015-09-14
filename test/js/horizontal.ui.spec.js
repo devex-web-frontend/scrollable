@@ -7,14 +7,17 @@ describe('Scrollable', function() {
 	});
 
 	describe('Horizontal scrollbar', function() {
-		it('should scroll content when mouse wheel spinning on it', function() {
-			mousewheel('.scrollbar-horizontal .scrollbar--track', {
-				x: -1,
-				y: 0
-			});
-			sleep(0.05);
-			expect(element('.scrollable--container').scrollLeft()).not().toBe(0);
-		});
+
+		//TODO: fild other way to use mouse wheel.
+		//initWenkitEvent is deprecated. https://groups.google.com/a/chromium.org/forum/#!searchin/blink-dev/initWebkitWheelEvent$20/blink-dev/h_GoezQ4MQ4/Q5abFkhA76sJ
+		//it('should scroll content when mouse wheel spinning on it', function() {
+		//	mousewheel('.scrollbar-horizontal .scrollbar--track', {
+		//		x: -1,
+		//		y: 0
+		//	});
+		//	sleep(0.05);
+		//	expect(element('.scrollable--container').scrollLeft()).not().toBe(0);
+		//});
 
 		it('should scroll when clicked on scrollbar--track', function() {
 			element('.scrollable--container').scrollLeft(100);

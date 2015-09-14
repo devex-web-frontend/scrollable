@@ -104,8 +104,18 @@ describe('Scrollable', function() {
 				scrollableContainer = document.querySelector('.scrollable--container');
 
 			expect(scrollable.clientWidth).toBe(scrollableContainer.clientWidth, '.scrollable--container should have same width like .scrollable reduced by system scrollbar width');
-			expect(scrollableContainer.clientWidth).not.toEqual(scrollableContainer.offsetWidth, '.scrollable--container should have system vertical scrollbar');
 			expect(scrollable.clientHeight).toBe(scrollableContainer.clientHeight, '.scrollable--container should have same height like .scrollable reduced by system scrollbar height');
+		});
+
+		it('should should keep system scrollbars', function() {
+			new Scrollable(testEl);
+
+			var scrollable = document.querySelector('.scrollable'),
+				scrollableContainer = document.querySelector('.scrollable--container');
+
+			scrollableContainer.classList.add('showWebkitScrollbar');
+
+			expect(scrollableContainer.clientWidth).not.toEqual(scrollableContainer.offsetWidth, '.scrollable--container should have system vertical scrollbar');
 			expect(scrollableContainer.clientHeight).not.toEqual(scrollableContainer.offsetHeight, '.scrollable--container should have system horizontal scrollbar');
 		});
 
@@ -128,11 +138,7 @@ describe('Scrollable', function() {
 			},'waits when .scrollable--content`s content area will have same sizes like .scrollable element', 100);
 		});
 
-		it('should hide webkit scrollbar when calculate scrollbar sizes', function() {
-
-		});
-
-		it('shoukd keep style tag if it already exists', function() {
+		it('should keep style tag if it already exists', function() {
 			var styleElement = document.createElement('style');
 
 			document.getElementsByTagName('head')[0].appendChild(styleElement);

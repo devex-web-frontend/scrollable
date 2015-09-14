@@ -49,32 +49,36 @@ window.Scrollable = (function(DX, window, document, undefined) {
 			testElement.style.overflow = 'scroll';
 			testElement.style.opacity = 0;
 
-			(function addStyles() {
-				var styleElement = dom.createElement('style'),
-					styles = '.scrollable--container::-webkit-scrollbar {width:0; height: 0;}';
-
-				styleElement.appendChild(document.createTextNode(styles));
-				styleElement.setAttribute('id', 'webkitStyleElement');
-				document.getElementsByTagName('head')[0].appendChild(styleElement);
-			})();
+			addStyles();
 
 			document.body.appendChild(testElement);
 			horizontalScrollSize = testElement.offsetHeight - testElement.clientHeight;
 			verticalScrollSize = testElement.offsetWidth - testElement.clientWidth;
 			document.body.removeChild(testElement);
 
-			(function removeStyles() {
-				var styleElement = document.getElementById('webkitStyleElement'),
-					head = dom.getParent(styleElement);
-
-				head.removeChild(styleElement);
-			})();
+			removeStyles();
 
 			return {
 				vertical: verticalScrollSize,
 				horizontal: horizontalScrollSize
 			};
 		})();
+
+	function addStyles() {
+		var styleElement = dom.createElement('style'),
+			styles = '.scrollable--container::-webkit-scrollbar {width:0; height: 0;}';
+
+		styleElement.appendChild(document.createTextNode(styles));
+		styleElement.setAttribute('id', 'webkitStyleElement');
+		document.getElementsByTagName('head')[0].appendChild(styleElement);
+	}
+
+	function removeStyles() {
+		var styleElement = document.getElementById('webkitStyleElement'),
+			head = dom.getParent(styleElement);
+
+		head.removeChild(styleElement);
+	}
 
 	function initElements(scrollableContainer) {
 		return {
