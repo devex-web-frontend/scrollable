@@ -37,7 +37,8 @@ $scrollableMinBarSize ?= 10px;
 	}
 
 	&--content {
-		display: inline-block;
+		// if for some reason you will need inline-block here,
+		// don't forget to add vertical-align: middle
 		position: relative;
 		min-width: 100%;
 	}
