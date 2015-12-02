@@ -50,35 +50,16 @@ window.Scrollable = (function(DX, window, document, undefined) {
 			testElement.style.overflow = 'scroll';
 			testElement.style.opacity = 0;
 
-			addStyles(head);
-
 			document.body.appendChild(testElement);
 			horizontalScrollSize = testElement.offsetHeight - testElement.clientHeight;
 			verticalScrollSize = testElement.offsetWidth - testElement.clientWidth;
 			document.body.removeChild(testElement);
-
-			removeStyles(head);
 
 			return {
 				vertical: verticalScrollSize,
 				horizontal: horizontalScrollSize
 			};
 		})();
-
-	function addStyles(head) {
-		var styleElement = dom.createElement('style'),
-			styles = '.scrollable--container::-webkit-scrollbar {width:0; height: 0;}';
-
-		styleElement.appendChild(document.createTextNode(styles));
-		styleElement.setAttribute('id', 'webkitStyleElement');
-		head.appendChild(styleElement);
-	}
-
-	function removeStyles(head) {
-		var styleElement = document.getElementById('webkitStyleElement');
-
-		head.removeChild(styleElement);
-	}
 
 	function initElements(scrollableContainer) {
 		return {
