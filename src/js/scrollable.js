@@ -265,6 +265,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
 				toggleScrollbars();
 				updateRatio();
 				updateBars();
+				fireUpdatedEvent();
 			}
 
 			function toggleScrollbars() {
@@ -290,7 +291,11 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
 				updateBarsSize();
 				updateBarsPosition();
 			}
-
+			
+			function fireUpdatedEvent() {
+				DX.Event.trigger(elements.container, Scrollable.E_UPDATED, {});
+			}
+			
 			function getAxisRatio(axis) {
 				var container = elements.container,
 						isHorizontal = (axis === 'x'),
@@ -472,6 +477,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
 	})(DX, window, document);
 
 	Scrollable.E_CREATED = 'scrollable:created';
+	Scrollable.E_UPDATED = 'scrollable:updated';
 
 	window.Scrollable = Scrollable;
 }
