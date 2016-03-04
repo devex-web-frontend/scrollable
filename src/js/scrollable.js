@@ -270,10 +270,11 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
 			function toggleScrollbars() {
 				var scrollable = elements.scrollable,
 						container = elements.container,
-						visibleHeight = container.clientHeight,
 						scrollHeight = container.scrollHeight,
-						visibleWidth = container.clientWidth,
 						scrollWidth = container.scrollWidth;
+				var bounds = container.getBoundingClientRect();
+				var visibleHeight = Math.round(bounds.height);
+				var visibleWidth = Math.round(bounds.width);
 
 				scrollable.classList[(scrollHeight > visibleHeight) ? 'add' : 'remove'](CN_WITH_VERTICAL_SCROLLBAR);
 				scrollable.classList[(scrollWidth > visibleWidth) ? 'add' : 'remove'](CN_WITH_HORIZONTAL_SCROLLBAR);
