@@ -32,8 +32,10 @@ $scrollableMinBarSize ?= 10px;
 	}
 
 	&--content {
-		// if for some reason you will need inline-block here,
-		// don't forget to add vertical-align: middle
+		// display inline-block allows to take the width more 100% width parent
+		// see scroll on history and order widget by example
+		display: inline-block
+		vertical-align: middle
 		position: relative;
 		min-width: 100%;
 	}
