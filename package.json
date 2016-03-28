@@ -1,6 +1,6 @@
 {
   "name": "scrollable",
-  "version": "5.2.1",
+  "version": "5.2.2",
   "private": true,
   "licence": "MPL-2.0",
   "devDependencies": {
