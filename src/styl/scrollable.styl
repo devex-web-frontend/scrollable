@@ -106,14 +106,17 @@ $scrollableMinBarSize ?= 10px;
 	}
 
 	&--bar {
-		absolute: top 0 left 0;
+		position: absolute;
+		top: 0;
+		left: 0;
 		width: 100%;
 		height: 100%;
 	}
 
 	&-vertical & {
 		&--button {
-			absolute: right 0;
+			position: absolute;
+			right: 0;
 			width: 100%;
 			height: $scrollableScrollBarButtonSize;
 
@@ -147,7 +150,8 @@ $scrollableMinBarSize ?= 10px;
 
 	&-horizontal & {
 		&--button {
-			absolute: bottom 0;
+			position: absolute;
+			bottom: 0;
 			width: $scrollableScrollBarButtonSize;
 			height: 100%;
 
