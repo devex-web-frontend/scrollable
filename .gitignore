@@ -4,3 +4,4 @@ lib
 .idea
 !.idea/jsLinters
 !.idea/inspectionProfiles
+_build
