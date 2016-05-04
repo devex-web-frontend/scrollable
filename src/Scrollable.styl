@@ -1,13 +1,5 @@
 @require '~config';
-
-/**
- * @copyright Devexperts
- */
-
-$scrollableScrollBarSize ?= 20px;
-$scrollableScrollBarButtonSize ?= 0;
-$scrollableScrollBarExtremeButtonSize ?= $scrollableScrollBarButtonSize;
-$scrollableMinBarSize ?= 10px;
+@require './Scrollable.config.styl';
 
 .scrollable {
 	overflow: hidden;
@@ -36,8 +28,8 @@ $scrollableMinBarSize ?= 10px;
 	&--content {
 		// display inline-block allows to take the width more 100% width parent
 		// see scroll on history and order widget by example
-		display: inline-block
-		vertical-align: middle
+		display: inline-block;
+		vertical-align: middle;
 		position: relative;
 		min-width: 100%;
 	}
@@ -51,134 +43,5 @@ $scrollableMinBarSize ?= 10px;
 		width: 100%;
 		height: 100%;
 		border: none;
-	}
-}
-
-.scrollbar {
-	hide() {
-		visibility: hidden;
-		z-index: -1;
-	}
-
-	show() {
-		visibility: visible;
-		z-index: auto;
-	}
-
-	position: absolute;
-	box-sizing: border-box;
-	hide();
-
-	&--button {
-		display: none unless $scrollableScrollBarButtonSize > 0;
-	}
-
-	&-vertical {
-		top: 0;
-		right: 0;
-		bottom: 0;
-		padding: ($scrollableScrollBarButtonSize + $scrollableScrollBarExtremeButtonSize) 0;
-		width: $scrollableScrollBarSize;
-
-		.scrollable-withVerticalScrollbar & {
-			show();
-		}
-		.scrollable-withHorizontalScrollbar & {
-			bottom: $scrollableScrollBarSize;
-		}
-	}
-
-	&-horizontal {
-		bottom: 0;
-		left: 0;
-		right: 0;
-		padding: 0 ($scrollableScrollBarButtonSize + $scrollableScrollBarExtremeButtonSize);
-		height: $scrollableScrollBarSize;
-
-		.scrollable-withHorizontalScrollbar & {
-			show();
-		}
-		.scrollable-withVerticalScrollbar & {
-			right: $scrollableScrollBarSize;
-		}
-	}
-
-	&--track {
-		position: relative;
-	}
-
-	&--bar {
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-	}
-
-	&-vertical & {
-		&--button {
-			position: absolute;
-			right: 0;
-			width: 100%;
-			height: $scrollableScrollBarButtonSize;
-
-			&-toStart {
-				top: 0;
-			}
-
-			&-backward {
-				top: $scrollableScrollBarExtremeButtonSize;
-			}
-
-			&-forward {
-				bottom: $scrollableScrollBarExtremeButtonSize;
-			}
-
-			&-toEnd {
-				bottom: 0;
-			}
-
-
-
-		}
-		&--track {
-			width: 100%;
-			height: 100%;
-		}
-		&--bar {
-			min-height: $scrollableMinBarSize;
-		}
-	}
-
-	&-horizontal & {
-		&--button {
-			position: absolute;
-			bottom: 0;
-			width: $scrollableScrollBarButtonSize;
-			height: 100%;
-
-			&-toStart {
-				left: 0;
-			}
-
-			&-backward {
-				left: $scrollableScrollBarExtremeButtonSize;
-			}
-
-			&-forward {
-				right: $scrollableScrollBarExtremeButtonSize;
-			}
-
-			&-toEnd {
-				right: 0;
-			}
-		}
-		&--track {
-			height: 100%;
-		}
-
-		&--bar {
-			min-width: $scrollableMinBarSize;
-		}
 	}
 }

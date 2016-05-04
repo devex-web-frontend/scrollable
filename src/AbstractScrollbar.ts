@@ -24,6 +24,8 @@ export interface IScrollbarRatio {
 
 export const BUTTON_SCROLL_STEP = 20;
 
+import './Scrollbar.styl';
+
 /**
  * AbstractScrollbar
  */
