@@ -29,6 +29,9 @@ export default {
 		]
 	},
 	resolve: {
+		alias: {
+			config: path.resolve('./test/config.styl')
+		},
 		extensions: [
 			'', //https://webpack.github.io/docs/configuration.html#resolve-extensions
 			'.js',
