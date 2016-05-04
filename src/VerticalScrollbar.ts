@@ -1,6 +1,6 @@
 import {AbstractScrollbar, BUTTON_SCROLL_STEP} from './AbstractScrollbar';
 import {modifier} from 'dx-util/src/bem/bem.js';
-import {CN_SCROLLBAR, IScrollbarRatio} from "./AbstractScrollbar";
+import {CN_SCROLLBAR, IScrollbarRatio} from './AbstractScrollbar';
 import {CN_WITHVERTICALSCROLLBAR} from './Scrollable.constants';
 const MOD_VERTICAL = 'vertical';
 

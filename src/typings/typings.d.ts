@@ -9,6 +9,6 @@ declare module 'dx-util/src/bem/bem.js' {
 declare module 'dxjs/src/dx.dom.js' {
 	const dom: {
 		createElement: Dummy;
-	}
+	};
 	export default dom;
 }

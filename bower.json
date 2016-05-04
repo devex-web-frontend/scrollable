@@ -3,7 +3,7 @@
   "version": "5.3.1",
   "private": true,
   "licence": "MPL-2.0",
-  "main": "./src/js/scrollable.js",
+  "main": "./src/Scrollable.ts",
   "ignore": [
     ".*",
     "test/**",
@@ -17,8 +17,5 @@
     "dxjs": "devex-web-frontend/dxjs#~3.1.5",
     "dx-util": "devex-web-frontend/dx-util#~0.6.0"
   },
-  "devDependencies": {},
-  "resolutions": {
-    "dxjs": "~3.1.5"
-  }
+  "devDependencies": {}
 }

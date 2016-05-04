@@ -1,12 +1,12 @@
 /// <reference path="./typings/typings.d.ts"/>
 
 import bem from 'dx-util/src/bem/bem.js';
-import dom from 'dxjs/src/dx.dom.js'
+import dom from 'dxjs/src/dx.dom.js';
 import Emitter from 'dx-util/src/emitter/Emitter.ts';
 
 import {HorizontalScrollbar} from './HorizontalScrollbar';
 import {VerticalScrollbar} from './VerticalScrollbar';
-import {AbstractScrollbar} from "./AbstractScrollbar";
+import {AbstractScrollbar} from './AbstractScrollbar';
 
 import {
 	CN_SCROLLABLE,
@@ -25,8 +25,10 @@ interface IScrollableInitPayload {
 		block: HTMLElement;
 		eventTarget: HTMLElement;
 		elementContent: HTMLElement;
-	}
+	};
 }
+
+import './Scrollable.styl';
 
 /**
  * Scrollable control
@@ -107,15 +109,15 @@ export class Scrollable extends Emitter {
 		this._renderScrollbars();
 
 		//render resize detectors
-		return this._renderResizeDetectors()
+		return this._renderResizeDetectors();
 	}
 
-	_renderScrollbars() {
+	private _renderScrollbars() {
 		this._verticalScrollbar = new VerticalScrollbar(this._scrollable, this._wrapper, this._container);
 		this._horizontalScrollbar = new HorizontalScrollbar(this._scrollable, this._wrapper, this._container);
 	}
 
-	_renderResizeDetectors():Promise<any> {
+	private _renderResizeDetectors():Promise<any> {
 		return Promise.all([
 			//the point here is to wait for initial resize event of created iframe and then continue initialization
 			new Promise((resolve, reject) => {
