@@ -145,14 +145,6 @@ export abstract class AbstractScrollbar {
 		this._container.addEventListener('scroll', this._onContainerScroll);
 	}
 
-	protected _watchMouseMove() {
-		document.addEventListener('selectstart', this._onDocumentSelectStart);
-	}
-
-	protected _stopWatchingMouseMove() {
-		document.removeEventListener('selectstart', this._onDocumentSelectStart);
-	}
-
 	/////////////////////////////////
 	// ABSTRACT DOM EVENT HANDLERS //
 	/////////////////////////////////
