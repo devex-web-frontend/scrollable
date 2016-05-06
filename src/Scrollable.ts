@@ -45,6 +45,8 @@ export class Scrollable extends Emitter {
 	private _scrollableResizeDetector:HTMLIFrameElement;
 	private _verticalScrollbar:AbstractScrollbar;
 	private _horizontalScrollbar:AbstractScrollbar;
+	private _isDetached:boolean = false;
+	private _isInitialized:boolean = false;
 
 	////////////////
 	// CONTRUCTOR //
@@ -60,9 +62,13 @@ export class Scrollable extends Emitter {
 	////////////
 
 	public init():Promise<IScrollableInitPayload> {
+		if (this._isInitialized) {
+			throw new Error('Cannot initialize Scrollable twice');
+		}
 		return this._render().then(() => {
 			this._verticalScrollbar.update();
 			this._horizontalScrollbar.update();
+			this._isInitialized = true;
 			return {
 				detail: {
 					block: this._scrollable,
@@ -71,6 +77,36 @@ export class Scrollable extends Emitter {
 				}
 			};
 		});
+	}
+
+	public notifyDetaching():void {
+		if (!this._isDetached) {
+			if (!this._contentResizeDetector.contentWindow || this._scrollableResizeDetector.contentWindow) {
+				throw new Error(
+					'Cannot find contentWindows! ' +
+					'Probably Scrollable#notifyDetaching is called after detaching from DOM'
+				);
+			}
+			this._contentResizeDetector.contentWindow.removeEventListener('resize', this._onResize);
+			this._scrollable.removeChild(this._contentResizeDetector);
+			delete this['_contentResizeDetector'];
+			this._scrollableResizeDetector.contentDocument.removeEventListener('resize', this._onResize);
+			this._content.removeChild(this._scrollableResizeDetector);
+			delete this['_scrollableResizeDetector'];
+			this._isDetached = true;
+		}
+	}
+
+	public notifyAttached():Promise<void> {
+		if (this._isDetached) {
+			this._isDetached = false;
+			return this._renderResizeDetectors().then(() => {
+				this._verticalScrollbar.update();
+				this._horizontalScrollbar.update();
+			});
+		} else {
+			return Promise.resolve();
+		}
 	}
 
 	/////////////
@@ -131,6 +167,12 @@ export class Scrollable extends Emitter {
 					resolve();
 				};
 				this._scrollable.appendChild(this._contentResizeDetector);
+				if (!this._contentResizeDetector.contentWindow) {
+					throw new Error('' +
+						'Cannot find contentWindow!' +
+						'Probably Scrollable#init is called before attaching to DOM'
+					);
+				}
 				this._contentResizeDetector.contentWindow.addEventListener('resize', onFirstResize);
 			}),
 
@@ -145,6 +187,12 @@ export class Scrollable extends Emitter {
 					resolve();
 				};
 				this._content.appendChild(this._scrollableResizeDetector);
+				if (!this._scrollableResizeDetector.contentWindow) {
+					throw new Error('' +
+						'Cannot find contentWindow!' +
+						'Probably Scrollable#init is called before attaching to DOM'
+					);
+				}
 				this._scrollableResizeDetector.contentWindow.addEventListener('resize', onFirstResize);
 			})
 		]);
