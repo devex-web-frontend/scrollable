@@ -65,10 +65,10 @@ export class Scrollable extends Emitter {
 		if (this._isInitialized) {
 			return Promise.reject<Error>(new Error('Cannot initialize Scrollable twice'));
 		}
+		this._isInitialized = true;
 		return this._render().then(() => {
 			this._verticalScrollbar.update();
 			this._horizontalScrollbar.update();
-			this._isInitialized = true;
 			return {
 				detail: {
 					block: this._scrollable,
