@@ -72,7 +72,7 @@ export class HorizontalScrollbar extends AbstractScrollbar {
 
 	protected _render() {
 		super._render();
-		this._scrollbar.classList.add(modifier(CN_SCROLLBAR, [MOD_HORIZONTAL]));
+		this._scrollbar.classList.add(modifier(CN_SCROLLBAR, MOD_HORIZONTAL));
 
 		//hide native scrollbar
 		this._container.style.marginBottom = -AbstractScrollbar.size.height + 'px';
