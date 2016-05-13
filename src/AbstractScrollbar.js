@@ -1,5 +1,3 @@
-/// <reference path="./typings/typings.d.ts"/>
-
 import dom from 'dxjs/src/dx.dom.js';
 import bem from 'dx-util/src/bem/bem.js';
 
@@ -12,52 +10,103 @@ const CN_SCROLLBAR__BUTTON_BACKWARD = bem(CN_SCROLLBAR__BUTTON, ['backward']);
 const CN_SCROLLBAR__BUTTON_TOEND = bem(CN_SCROLLBAR__BUTTON, ['extreme', 'toEnd']);
 const CN_SCROLLBAR__BUTTON_TOSTART = bem(CN_SCROLLBAR__BUTTON, ['extreme', 'toStart']);
 
-interface IScrollbarSize {
-	width:number;
-	height:number;
-}
+/**
+ * @typedef {Object} TScrollbarSize
+ * @property {Number} width
+ * @property {Number} height
+ */
 
-export interface IScrollbarRatio {
-	size: number;
-	position: number;
-}
+/**
+ * @typedef {Object} TScrollbarRatio
+ * @property {number} size
+ * @property {number} position
+ */
 
 export const BUTTON_SCROLL_STEP = 20;
 
 import './Scrollbar.styl';
 
 /**
- * AbstractScrollbar
+ * @class AbstractScrollbar
+ * @abstract
  */
-export abstract class AbstractScrollbar {
+export class AbstractScrollbar {
 	////////////
 	// FIELDS //
 	////////////
 
-	protected _scrollable:HTMLElement;
-	protected _container:HTMLElement;
-	protected _scrollbar:HTMLElement;
-	protected _bar:HTMLElement;
-	protected _track:HTMLElement;
-	protected _ratio:IScrollbarRatio;
-	protected _minBarSize:number;
+	/**
+	 * @protected
+	 * @type {HTMLElement}
+	 */
+	_scrollable;
+	/**
+	 * @protected
+	 * @type {HTMLElement}
+	 */
+	_container;
+	/**
+	 * @protected
+	 * @type {HTMLElement}
+	 */
+	_scrollbar;
+	/**
+	 * @protected
+	 * @type {HTMLElement}
+	 */
+	_bar;
+	/**
+	 * @protected
+	 * @type {HTMLElement}
+	 */
+	_track;
+	/**
+	 * @protected
+	 * @type {TScrollbarRatio}
+	 */
+	_ratio;
+	/**
+	 * @protected
+	 * @type {number}
+	 */
+	_minBarSize;
 
-	private _wrapper:HTMLElement;
-	private _buttonToEnd:HTMLButtonElement;
-	private _buttonToStart:HTMLButtonElement;
-	private _buttonForward:HTMLButtonElement;
-	private _buttonBackward:HTMLButtonElement;
+	/**
+	 * @protected
+	 * @type {HTMLElement}
+	 */
+	_wrapper;
+	/**
+	 * @protected
+	 * @type {HTMLButtonElement}
+	 */
+	_buttonToEnd;
+	/**
+	 * @protected
+	 * @type {HTMLButtonElement}
+	 */
+	_buttonToStart;
+	/**
+	 * @protected
+	 * @type {HTMLButtonElement}
+	 */
+	_buttonForward;
+	/**
+	 * @protected
+	 * @type {HTMLButtonElement}
+	 */
+	_buttonBackward;
 
 	////////////////
 	// CONTRUCTOR //
 	////////////////
 
 	/**
-	 * @param scrollable - main scrollable element (usually .scrollable)
-	 * @param wrapper - container for scrollbars (usually .scrollable--wrapper)
-	 * @param container - element that should be scrolled actually (usually .scrollable--container)
+	 * @param {HTMLElement} scrollable - main scrollable element (usually .scrollable)
+	 * @param {HTMLElement} wrapper - container for scrollbars (usually .scrollable--wrapper)
+	 * @param {HTMLElement} container - element that should be scrolled actually (usually .scrollable--container)
 	 */
-	public constructor(scrollable:HTMLElement, wrapper:HTMLElement, container:HTMLElement) {
+	constructor(scrollable, wrapper, container) {
 		this._scrollable = scrollable;
 		this._container = container;
 		this._wrapper = wrapper;
@@ -72,7 +121,7 @@ export abstract class AbstractScrollbar {
 	/**
 	 * Updates scrollbar: visibility, ratio, size, position etc.
 	 */
-	public update() {
+	update() {
 		this._toggle(this._container.getBoundingClientRect());
 		this._ratio = this._getRatio();
 		this._updateBar();
@@ -86,58 +135,86 @@ export abstract class AbstractScrollbar {
 	// PROTECTED //
 	///////////////
 
-	protected abstract _toggle(bounds:ClientRect):void;
+	/**
+	 * @abstract
+	 * @param {ClientRect} bounds
+	 * @protected
+	 */
+	_toggle(bounds) {
+	}
 
-	protected abstract _getMinBarSize():number;
+	//noinspection Eslint
+	/**
+	 * @abstract
+	 * @protected
+	 * @returns {number}
+	 */
+	_getMinBarSize() {
+	}
 
-	protected abstract _getRatio():IScrollbarRatio;
+	//noinspection Eslint
+	/**
+	 * @abstract
+	 * @protected
+	 * @returns {TScrollbarRatio}
+	 */
+	_getRatio() {
+	}
 
-	protected abstract _updateBar():void;
+	/**
+	 * @abstract
+	 * @protected
+	 */
+	_updateBar() {
+	}
 
-	protected _render() {
+	/**
+	 * @protected
+	 */
+	_render() {
 		//bar
 		this._bar = dom.createElement('div', {
 			className: CN_SCROLLBAR__BAR
-		}) as HTMLElement;
+		});
 		this._bar.addEventListener('mousedown', this._onBarMouseDown);
 		this._bar.addEventListener('click', this._onBarClick);
 
 		//track
 		this._track = dom.createElement('div', {
 			className: CN_SCROLLBAR__TRACK
-		}) as HTMLElement;
+		});
 		this._track.appendChild(this._bar);
-		this._track.addEventListener(getMouseWheelEventName(), e => this._onTrackMouseWheel(e as WheelEvent), true);
+		this._track.addEventListener(getMouseWheelEventName(), e => this._onTrackMouseWheel(e), true);
 		this._track.addEventListener('click', e => this._onTrackClick(e));
 
 		//button to start
 		this._buttonToStart = dom.createElement('button', {
 			className: CN_SCROLLBAR__BUTTON_TOSTART
-		})  as HTMLButtonElement;
+		});
 		this._buttonToStart.addEventListener('click', e => this._onButtonToStartClick(e));
 
 		//button to end
 		this._buttonToEnd = dom.createElement('button', {
 			className: CN_SCROLLBAR__BUTTON_TOEND
-		}) as HTMLButtonElement;
+		});
 		this._buttonToEnd.addEventListener('click', e => this._onButtonToEndClick(e));
 
 		//button forward
 		this._buttonForward = dom.createElement('button', {
 			className: CN_SCROLLBAR__BUTTON_FORWARD
-		}) as HTMLButtonElement;
+		});
 		this._buttonForward.addEventListener('click', e => this._onButtonForwardClick(e));
 
 		//button backward
 		this._buttonBackward = dom.createElement('button', {
 			className: CN_SCROLLBAR__BUTTON_BACKWARD
-		}) as HTMLButtonElement;
+		});
 		this._buttonBackward.addEventListener('click', e => this._onButtonBackwardClick(e));
 
 		//scrollbar
 		this._scrollbar = dom.createElement('div', {
 			className: CN_SCROLLBAR
-		})  as HTMLElement;
+		});
 		this._scrollbar.appendChild(this._buttonToStart);
 		this._scrollbar.appendChild(this._buttonBackward);
 		this._scrollbar.appendChild(this._track);
@@ -151,35 +228,95 @@ export abstract class AbstractScrollbar {
 	// ABSTRACT DOM EVENT HANDLERS //
 	/////////////////////////////////
 
-	protected abstract _onTrackMouseWheel(e:WheelEvent):void;
+	/**
+	 * @abstract
+	 * @param {WheelEvent} e
+	 * @protected
+	 */
+	_onTrackMouseWheel(e) {
+	};
 
-	protected abstract _onTrackClick(e:MouseEvent):void;
+	/**
+	 * @abstract
+	 * @param {MouseEvent} e
+	 * @protected
+	 */
+	_onTrackClick(e) {
+	};
 
-	protected abstract _onButtonForwardClick(e:Event):void;
+	/**
+	 * @abstract
+	 * @param {Event} e
+	 * @protected
+	 */
+	_onButtonForwardClick(e) {
+	};
 
-	protected abstract _onButtonBackwardClick(e:Event):void;
+	/**
+	 * @abstract
+	 * @param {Event} e
+	 * @protected
+	 */
+	_onButtonBackwardClick(e) {
+	};
 
-	protected abstract _onButtonToStartClick(e:Event):void;
+	/**
+	 * @abstract
+	 * @param {Event} e
+	 * @protected
+	 */
+	_onButtonToStartClick(e) {
+	};
 
-	protected abstract _onButtonToEndClick(e:Event):void;
+	/**
+	 * @abstract
+	 * @param {Event} e
+	 * @protected
+	 */
+	_onButtonToEndClick(e) {
+	};
 
-	protected abstract _onBarDragStart(e:MouseEvent):void;
+	/**
+	 * @abstract
+	 * @param {MouseEvent} e
+	 * @protected
+	 */
+	_onBarDragStart(e) {
+	};
 
-	protected abstract _onBarDrag(e:MouseEvent):void;
+	/**
+	 * @abstract
+	 * @param {MouseEvent} e
+	 * @protected
+	 */
+	_onBarDrag(e) {
+	};
 
 	////////////////////////
 	// DOM EVENT HANDLERS //
 	////////////////////////
 
-	private _onContainerScroll:EventListener = e => {
+	/**
+	 * @param {Event} e
+	 * @private
+	 */
+	_onContainerScroll = e => {
 		this._updateBar();
 	}
 
-	protected _onBarClick = (e:MouseEvent) => {
+	/**
+	 * @param {MouseEvent} e
+	 * @protected
+	 */
+	_onBarClick = (e) => {
 		e.stopPropagation();
 	}
 
-	protected _onBarMouseDown = (e:MouseEvent) => {
+	/**
+	 * @param {MouseEvent} e
+	 * @protected
+	 */
+	_onBarMouseDown = (e) => {
 		this._onBarDragStart(e);
 
 		document.addEventListener('mousemove', this._onDocumentMouseMove);
@@ -187,18 +324,31 @@ export abstract class AbstractScrollbar {
 		document.addEventListener('selectstart', this._onDocumentSelectStart);
 	}
 
-	private _onDocumentMouseMove = (e:MouseEvent) => {
+	/**
+	 * @param {MouseEvent} e
+	 * @private
+	 */
+	_onDocumentMouseMove = (e) => {
 		this._onBarDrag(e);
 	}
 
-	private _onDocumentMouseUp = (e:MouseEvent) => {
+	/**
+	 * @param {MouseEvent} e
+	 * @private
+	 */
+	_onDocumentMouseUp = (e) => {
 		document.removeEventListener('selectstart', this._onDocumentSelectStart);
 		document.removeEventListener('mouseup', this._onDocumentMouseUp);
 		document.removeEventListener('mousemove', this._onDocumentMouseMove);
 		this._onBarDrag(e);
 	}
 
-	private _onDocumentSelectStart = (e:Event) => {
+	/**
+	 * @param {Event} e
+	 * @returns {boolean}
+	 * @private
+	 */
+	_onDocumentSelectStart = (e) => {
 		e.preventDefault();
 		e.stopPropagation();
 		return false;
@@ -208,8 +358,16 @@ export abstract class AbstractScrollbar {
 	// STATIC //
 	////////////
 
-	private static _size:IScrollbarSize;
-	public static get size():IScrollbarSize {
+	/**
+	 * @type {TScrollbarSize}
+	 * @private
+	 */
+	static _size;
+	/**
+	 * size
+	 * @returns {TScrollbarSize}
+	 */
+	static get size() {
 		if (!AbstractScrollbar._size) {
 			const dummy = document.createElement('div');
 			dummy.style.width = '100px';
@@ -235,7 +393,7 @@ export abstract class AbstractScrollbar {
  * Gets supported mouse wheel event name
  * @returns {string}
  */
-function getMouseWheelEventName():string {
+function getMouseWheelEventName() {
 	if ('onmousewheel' in document.documentElement) {
 		return 'mousewheel';
 	} else if ('DOMMouseScroll' in document.documentElement) {

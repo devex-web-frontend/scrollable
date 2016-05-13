@@ -1,9 +1,13 @@
 import {AbstractScrollbar, BUTTON_SCROLL_STEP} from './AbstractScrollbar';
 import {modifier} from 'dx-util/src/bem/bem.js';
-import {CN_SCROLLBAR, IScrollbarRatio} from './AbstractScrollbar';
+import {CN_SCROLLBAR} from './AbstractScrollbar';
 import {CN_WITHVERTICALSCROLLBAR} from './Scrollable.constants';
 const MOD_VERTICAL = 'vertical';
 
+/**
+ * @class VerticalScrollbar
+ * @extends AbstractScrollbar
+ */
 export class VerticalScrollbar extends AbstractScrollbar {
 	////////////
 	// PUBLIC //
@@ -13,14 +17,24 @@ export class VerticalScrollbar extends AbstractScrollbar {
 	// PRIVATE //
 	/////////////
 
-	private _isVisible:boolean = false;
-	private _previousDragCoordinate:number;
+	/**
+	 * @type {boolean}
+	 * @private
+	 */
+	_isVisible = false;
+	/**
+	 * @type {number}
+	 */
+	_previousDragCoordinate;
 
 	///////////////
 	// PROTECTED //
 	///////////////
 
-	protected _updateBar() {
+	/**
+	 * @protected
+	 */
+	_updateBar() {
 		//size
 		const visibleHeight = this._container.clientHeight;
 		const barHeight = Math.ceil(visibleHeight * this._ratio.size);
@@ -32,11 +46,19 @@ export class VerticalScrollbar extends AbstractScrollbar {
 		this._bar.style.top = `${barPositionTop}px`;
 	}
 
-	protected _getMinBarSize():number {
+	/**
+	 * @returns {number}
+	 * @protected
+	 */
+	_getMinBarSize() {
 		return parseFloat(window.getComputedStyle(this._bar).getPropertyPriority('min-height'));
 	}
 
-	protected _getRatio():IScrollbarRatio {
+	/**
+	 * @returns {TScrollbarRatio}
+	 * @protected
+	 */
+	_getRatio() {
 		const scrollSize = this._container.scrollHeight;
 		const containerSize = this._container.clientHeight;
 		const trackSize = this._scrollbar.offsetHeight;
@@ -53,7 +75,11 @@ export class VerticalScrollbar extends AbstractScrollbar {
 		};
 	}
 
-	protected _toggle(bounds:ClientRect) {
+	/**
+	 * @param {ClientRect} bounds
+	 * @protected
+	 */
+	_toggle(bounds) {
 		const height = Math.round(bounds.height);
 		const scrollHeight = this._container.scrollHeight;
 		if (scrollHeight > height) {
@@ -69,7 +95,10 @@ export class VerticalScrollbar extends AbstractScrollbar {
 		}
 	}
 
-	protected _render() {
+	/**
+	 * @private
+	 */
+	_render() {
 		super._render();
 		this._scrollbar.classList.add(modifier(CN_SCROLLBAR, MOD_VERTICAL));
 
@@ -82,38 +111,70 @@ export class VerticalScrollbar extends AbstractScrollbar {
 	// DOM EVENT HANDLERS //
 	////////////////////////
 
-	protected _onTrackMouseWheel(e:WheelEvent) {
-		this._container.scrollTop += (e.deltaY * 10 || e.detail * 10 || (<any>e)['wheelDelta'] * -1);
+	/**
+	 * @param {WheelEvent} e
+	 * @protected
+	 */
+	_onTrackMouseWheel(e) {
+		this._container.scrollTop += (e.deltaY * 10 || e['detail'] * 10 || e['wheelDelta'] * -1);
 	}
 
-	protected _onButtonForwardClick(e:Event) {
+	/**
+	 * @param {Event} e
+	 * @protected
+	 */
+	_onButtonForwardClick(e) {
 		this._container.scrollTop += BUTTON_SCROLL_STEP;
 	}
 
-	protected _onButtonBackwardClick(e:Event) {
+	/**
+	 * @param {Event} e
+	 * @protected
+	 */
+	_onButtonBackwardClick(e) {
 		this._container.scrollTop -= BUTTON_SCROLL_STEP;
 	}
 
-	protected _onButtonToStartClick(e:Event) {
+	/**
+	 * @param {Event} e
+	 * @protected
+	 */
+	_onButtonToStartClick(e) {
 		this._container.scrollTop = 0;
 	}
 
-	protected _onButtonToEndClick(e:Event) {
+	/**
+	 * @param {Event} e
+	 * @protected
+	 */
+	_onButtonToEndClick(e) {
 		this._container.scrollTop = this._container.scrollHeight;
 	}
 
-	protected _onTrackClick(e:MouseEvent) {
+	/**
+	 * @param {MouseEvent} e
+	 * @protected
+	 */
+	_onTrackClick(e) {
 		const trackPosition = this._track.getBoundingClientRect().top +
 			window.pageYOffset -
 			document.documentElement.clientTop;
 		this._container.scrollTop = Math.floor((e.clientY - trackPosition) / this._ratio.position);
 	}
 
-	protected _onBarDragStart(e:MouseEvent) {
+	/**
+	 * @param {MouseEvent} e
+	 * @protected
+	 */
+	_onBarDragStart(e) {
 		this._previousDragCoordinate = e.clientY;
 	}
 
-	protected _onBarDrag(e:MouseEvent) {
+	/**
+	 * @param {MouseEvent} e
+	 * @protected
+	 */
+	_onBarDrag(e) {
 		const delta = this._previousDragCoordinate - e.clientY;
 		this._previousDragCoordinate = e.clientY;
 		this._container.scrollTop -= delta / this._ratio.position;

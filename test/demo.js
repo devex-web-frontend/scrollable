@@ -1,4 +1,4 @@
-import {Scrollable} from '../src/Scrollable.ts';
+import {Scrollable} from '../src/Scrollable';
 
 import './demo.styl';
 
