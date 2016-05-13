@@ -1,5 +1,3 @@
-/// <reference path="./typings/typings.d.ts"/>
-
 import bem from 'dx-util/src/bem/bem.js';
 import dom from 'dxjs/src/dx.dom.js';
 import Emitter from 'dx-util/src/emitter/Emitter.ts';
@@ -16,43 +14,95 @@ import {
 	CN_SCROLLABLE_RESIZEDETECTOR
 } from './Scrollable.constants';
 
-export enum EVENT_SCROLLABLE {
-	UPDATE = <any>'UPDATE'
-}
+/**
+ * @enum {String} EVENT_SCROLLABLE
+ */
+export const EVENT_SCROLLABLE = {
+	UPDATE: 'UPDATE'
+};
 
-interface IScrollableInitPayload {
-	detail: {
-		block: HTMLElement;
-		eventTarget: HTMLElement;
-		elementContent: HTMLElement;
-	};
-}
+/**
+ * @typedef {Object} TScrollableInitPayloadDetail
+ * @property {HTMLElement} block
+ * @property {HTMLElement} eventTarget
+ * @property {HTMLElement} elementContent
+ */
+
+/**
+ * @typedef {Object} TScrollableInitPayload
+ * @property {TScrollableInitPayload} detail
+ */
 
 import './Scrollable.styl';
 
 /**
  * Scrollable control
+ * @class Scrollable
+ * @extends Emitter
  */
 export class Scrollable extends Emitter {
 	////////////
 	// FIELDS //
 	////////////
-	private _container:HTMLElement;
-	private _scrollable:HTMLElement;
-	private _wrapper:HTMLElement;
-	private _content:HTMLElement;
-	private _contentResizeDetector:HTMLIFrameElement;
-	private _scrollableResizeDetector:HTMLIFrameElement;
-	private _verticalScrollbar:AbstractScrollbar;
-	private _horizontalScrollbar:AbstractScrollbar;
-	private _isDetached:boolean = false;
-	private _isInitialized:boolean = false;
+	/**
+	 * @type {HTMLElement}
+	 * @private
+	 */
+	_container;
+	/**
+	 * @type {HTMLElement}
+	 * @private
+	 */
+	_scrollable;
+	/**
+	 * @type {HTMLElement}
+	 * @private
+	 */
+	_wrapper;
+	/**
+	 * @type {HTMLElement}
+	 * @private
+	 */
+	_content;
+	/**
+	 * @type {HTMLIFrameElement}
+	 * @private
+	 */
+	_contentResizeDetector;
+	/**
+	 * @type {HTMLIFrameElement}
+	 * @private
+	 */
+	_scrollableResizeDetector;
+	/**
+	 * @type {AbstractScrollbar}
+	 * @private
+	 */
+	_verticalScrollbar;
+	/**
+	 * @type {AbstractScrollbar}
+	 * @private
+	 */
+	_horizontalScrollbar;
+	/**
+	 * @type {boolean}
+	 * @private
+	 */
+	_isDetached = false;
+	/**
+	 * @type {boolean}
+	 * @private
+	 */
+	_isInitialized = false;
 
 	////////////////
 	// CONTRUCTOR //
 	////////////////
 
-	constructor(container:HTMLElement) {
+	/**
+	 * @param {HTMLElement} container
+	 */
+	constructor(container) {
 		super();
 		this._container = container;
 	}
@@ -61,9 +111,12 @@ export class Scrollable extends Emitter {
 	// PUBLIC //
 	////////////
 
-	public init():Promise<IScrollableInitPayload|Error> {
+	/**
+	 * @returns {Promise<TScrollableInitPayload|Error>}
+	 */
+	init() {
 		if (this._isInitialized) {
-			return Promise.reject<Error>(new Error('Cannot initialize Scrollable twice'));
+			return Promise.reject(new Error('Cannot initialize Scrollable twice'));
 		}
 		this._isInitialized = true;
 		return this._render().then(() => {
@@ -79,7 +132,7 @@ export class Scrollable extends Emitter {
 		});
 	}
 
-	public notifyDetaching():void {
+	notifyDetaching() {
 		if (!this._isDetached) {
 			if (!this._contentResizeDetector.contentWindow || !this._scrollableResizeDetector.contentWindow) {
 				throw new Error(
@@ -97,7 +150,10 @@ export class Scrollable extends Emitter {
 		}
 	}
 
-	public notifyAttached():Promise<void> {
+	/**
+	 * @returns {Promise<void>}
+	 */
+	notifyAttached() {
 		if (this._isDetached) {
 			this._isDetached = false;
 			return this._renderResizeDetectors().then(() => {
@@ -112,18 +168,22 @@ export class Scrollable extends Emitter {
 	/////////////
 	// PRIVATE //
 	/////////////
-	private _render():Promise<any> {
+	/**
+	 * @returns {Promise.<any>}
+	 * @private
+	 */
+	_render() {
 		this._wrapper = dom.createElement('div', {
 			className: CN_SCROLLABLE__WRAPPER
-		}) as HTMLElement;
+		});
 
 		this._scrollable = dom.createElement('div', {
 			className: [CN_SCROLLABLE, this._container.className]
-		}) as HTMLElement;
+		});
 
 		this._content = dom.createElement('div', {
 			className: CN_SCROLLABLE__CONTENT
-		}) as HTMLElement;
+		});
 
 		//inline max height
 		const scrollableMaxHeight = window.getComputedStyle(this._scrollable).getPropertyValue('max-height');
@@ -148,20 +208,30 @@ export class Scrollable extends Emitter {
 		return this._renderResizeDetectors();
 	}
 
-	private _renderScrollbars() {
+	/**
+	 * @private
+	 */
+	_renderScrollbars() {
 		this._verticalScrollbar = new VerticalScrollbar(this._scrollable, this._wrapper, this._container);
 		this._horizontalScrollbar = new HorizontalScrollbar(this._scrollable, this._wrapper, this._container);
 	}
 
-	private _renderResizeDetectors():Promise<any> {
+	/**
+	 * @returns {Promise<any>}
+	 * @private
+	 */
+	_renderResizeDetectors() {
 		return Promise.all([
 			//the point here is to wait for initial resize event of created iframe and then continue initialization
 			new Promise((resolve, reject) => {
 				this._contentResizeDetector = dom.createElement('iframe', {
 					className: CN_SCROLLABLE_RESIZEDETECTOR,
 					src: 'about:blank'
-				}) as HTMLIFrameElement;
-				const onFirstResize:EventListener = e => {
+				});
+				/**
+				 * @param {Event} e
+				 */
+				const onFirstResize = e => {
 					this._contentResizeDetector.contentWindow.removeEventListener('resize', onFirstResize);
 					this._contentResizeDetector.contentWindow.addEventListener('resize', this._onResize);
 					resolve();
@@ -180,8 +250,11 @@ export class Scrollable extends Emitter {
 				this._scrollableResizeDetector = dom.createElement('iframe', {
 					className: CN_SCROLLABLE_RESIZEDETECTOR,
 					src: 'about:blank'
-				}) as HTMLIFrameElement;
-				const onFirstResize:EventListener = e => {
+				});
+				/**
+				 * @param {Event} e
+				 */
+				const onFirstResize = e => {
 					this._scrollableResizeDetector.contentWindow.removeEventListener('resize', onFirstResize);
 					this._scrollableResizeDetector.contentWindow.addEventListener('resize', this._onResize);
 					resolve();
@@ -202,7 +275,11 @@ export class Scrollable extends Emitter {
 	// DOM EVENT HANDLERS //
 	////////////////////////
 
-	protected _onResize:EventListener = e => {
+	/**
+	 * @param {Event} e
+	 * @protected
+	 */
+	_onResize = e => {
 		this._verticalScrollbar.update();
 		this._horizontalScrollbar.update();
 		this._emit(EVENT_SCROLLABLE.UPDATE);
@@ -212,7 +289,11 @@ export class Scrollable extends Emitter {
 	// STATIC //
 	////////////
 
-	public static create(container:HTMLElement):Promise<IScrollableInitPayload> {
+	/**
+	 * @param {HTMLElement} container
+	 * @returns {Promise.<TScrollableInitPayload|Error>}
+	 */
+	static create(container) {
 		return new Scrollable(container).init();
 	}
 }
