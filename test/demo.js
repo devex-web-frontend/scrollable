@@ -65,8 +65,8 @@ scrollable.init(section).then(result => {
 	main.querySelector('.button-detachAttach').addEventListener('click', e => {
 		if (isReady) {
 			if (attached) {
-				main.removeChild(node);
 				scrollable.notifyDetaching();
+				main.removeChild(node);
 				attached = false;
 			} else {
 				isReady = false;

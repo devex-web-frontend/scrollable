@@ -81,7 +81,7 @@ export class Scrollable extends Emitter {
 
 	public notifyDetaching():void {
 		if (!this._isDetached) {
-			if (!this._contentResizeDetector.contentWindow || this._scrollableResizeDetector.contentWindow) {
+			if (!this._contentResizeDetector.contentWindow || !this._scrollableResizeDetector.contentWindow) {
 				throw new Error(
 					'Cannot find contentWindows! ' +
 					'Probably Scrollable#notifyDetaching is called after detaching from DOM'
