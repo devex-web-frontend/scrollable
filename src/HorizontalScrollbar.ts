@@ -84,7 +84,7 @@ export class HorizontalScrollbar extends AbstractScrollbar {
 	////////////////////////
 
 	protected _onTrackMouseWheel(e:WheelEvent) {
-		this._container.scrollLeft += (e.deltaX * 10 || e.detail * 10 || (e.wheelDeltaX * -1));
+		this._container.scrollLeft += (e.deltaX * 10 || e.detail * 10 || (<any>e)['wheelDeltaX'] * -1);
 	}
 
 	protected _onTrackClick(e:MouseEvent) {
