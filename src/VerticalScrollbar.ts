@@ -71,7 +71,7 @@ export class VerticalScrollbar extends AbstractScrollbar {
 
 	protected _render() {
 		super._render();
-		this._scrollbar.classList.add(modifier(CN_SCROLLBAR, [MOD_VERTICAL]));
+		this._scrollbar.classList.add(modifier(CN_SCROLLBAR, MOD_VERTICAL));
 
 		//hide native scrollbar
 		this._container.style.marginRight = -AbstractScrollbar.size.width + 'px';
