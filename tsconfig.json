@@ -8,6 +8,11 @@
   "exclude": [
     "node_modules",
     "src",
-    "lib"
+    "lib",
+    "dist",
+    "esdoc",
+    "bower_cache",
+    "babel_cache",
+    "_build"
   ]
 }
