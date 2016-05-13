@@ -1,56 +1,5 @@
-/**
- * @copyright Devexperts
- */
-
-$scrollableScrollBarSize ?= 20px;
-$scrollableScrollBarButtonSize ?= 0;
-$scrollableScrollBarExtremeButtonSize ?= $scrollableScrollBarButtonSize;
-$scrollableMinBarSize ?= 10px;
-
-.scrollable {
-	overflow: hidden;
-	position: relative;
-
-	&--wrapper {
-		display: block;
-		width: 100%;
-		height: 100%;
-	}
-
-	&--container {
-		padding: 0;
-		overflow: scroll;
-		box-sizing: border-box;
-	}
-
-	&-withHorizontalScrollbar &--content {
-		padding-bottom: $scrollableScrollBarSize;
-	}
-
-	&-withVerticalScrollbar &--container {
-		padding-right: $scrollableScrollBarSize;
-	}
-
-	&--content {
-		// display inline-block allows to take the width more 100% width parent
-		// see scroll on history and order widget by example
-		display: inline-block
-		vertical-align: middle
-		position: relative;
-		min-width: 100%;
-	}
-
-	&--resizeDetector {
-		position: absolute;
-		top: 0;
-		left: 0;
-
-		z-index: -1;
-		width: 100%;
-		height: 100%;
-		border: none;
-	}
-}
+@require '~config';
+@require './Scrollable.config.styl';
 
 .scrollbar {
 	hide() {
@@ -166,7 +115,7 @@ $scrollableMinBarSize ?= 10px;
 			&-forward {
 				right: $scrollableScrollBarExtremeButtonSize;
 			}
-			
+
 			&-toEnd {
 				right: 0;
 			}
