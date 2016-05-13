@@ -83,7 +83,7 @@ export class VerticalScrollbar extends AbstractScrollbar {
 	////////////////////////
 
 	protected _onTrackMouseWheel(e:WheelEvent) {
-		this._container.scrollTop += (e.deltaY * 10 || e.detail * 10 || (e.wheelDelta * -1));
+		this._container.scrollTop += (e.deltaY * 10 || e.detail * 10 || (<any>e)['wheelDelta'] * -1);
 	}
 
 	protected _onButtonForwardClick(e:Event) {
