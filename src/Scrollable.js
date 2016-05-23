@@ -226,7 +226,7 @@ export class Scrollable extends Emitter {
 			new Promise((resolve, reject) => {
 				this._contentResizeDetector = dom.createElement('iframe', {
 					className: CN_SCROLLABLE_RESIZEDETECTOR,
-					src: 'about:blank'
+					src: generateIframeSource()
 				});
 				/**
 				 * @param {Event} e
@@ -249,7 +249,7 @@ export class Scrollable extends Emitter {
 			new Promise((resolve, reject) => {
 				this._scrollableResizeDetector = dom.createElement('iframe', {
 					className: CN_SCROLLABLE_RESIZEDETECTOR,
-					src: 'about:blank'
+					src: generateIframeSource()
 				});
 				/**
 				 * @param {Event} e
@@ -296,4 +296,9 @@ export class Scrollable extends Emitter {
 	static create(container) {
 		return new Scrollable(container).init();
 	}
+}
+
+//http://stackoverflow.com/a/2487023/1961479
+function generateIframeSource() {
+	return `javascript:(function(){document.open();document.domain='${document.domain}';document.close();})()`;
 }
