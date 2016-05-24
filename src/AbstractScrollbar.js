@@ -414,8 +414,8 @@ function getMouseWheelEventName() {
  * @returns {Function} clearer function, removing inlined styles from DOM
  */
 function fixScrollStyles() {
-	let styleFixEl = document.createElement('style'),
-		styleFixText = `.${CN_SCROLLBAR__CONTAINER}::-webkit-scrollbar { display: none; }`;
+	let styleFixEl = document.createElement('style');
+	let styleFixText = `.${CN_SCROLLBAR__CONTAINER}::-webkit-scrollbar { display: none; }`;
 
 	styleFixEl.type = 'text/css';
 
@@ -429,5 +429,5 @@ function fixScrollStyles() {
 
 	return function() {
 		document.head.removeChild(styleFixEl);
-	}
+	};
 }
