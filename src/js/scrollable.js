@@ -39,29 +39,41 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
 					return event;
 				})(),
 				ipad = /(iPad|iPhone|iPod)/g.test(navigator.userAgent),
-				scrollBarsSize = (function() {
-					var testElement = dom.createElement('div', {
-								className: CN_CONTAINER
-							}),
-							verticalScrollSize,
-							horizontalScrollSize,
-							head = document.getElementsByTagName('head')[0];
+			scrollBarsSize = (function() {
+				var testElement = dom.createElement('div', {
+						className: CN_CONTAINER
+					}),
+					verticalScrollSize,
+					horizontalScrollSize,
+					head = document.getElementsByTagName('head')[0],
+					styleFixElement = dom.createElement('style', { type: 'text/css' }),
+					styleFixText = ['.' + CN_CONTAINER + '::-webkit-scrollbar {',
+						'display: none;',
+						'}'].join('\n');
 
-					testElement.style.width = '100px';
-					testElement.style.height = '100px';
-					testElement.style.overflow = 'scroll';
-					testElement.style.opacity = 0;
+				if (styleFixElement.styleSheet) { // IE < 11
+					styleFixElement.styleSheet.cssText = styleFixText;
+				} else {
+					styleFixElement.innerHTML = styleFixText;
+				}
+				head.appendChild(styleFixElement);
 
-					document.body.appendChild(testElement);
-					horizontalScrollSize = testElement.offsetHeight - testElement.clientHeight;
-					verticalScrollSize = testElement.offsetWidth - testElement.clientWidth;
-					document.body.removeChild(testElement);
+				testElement.style.width = '100px';
+				testElement.style.height = '100px';
+				testElement.style.overflow = 'scroll';
+				testElement.style.opacity = 0;
 
-					return {
-						vertical: verticalScrollSize,
-						horizontal: horizontalScrollSize
-					};
-				})();
+				document.body.appendChild(testElement);
+				horizontalScrollSize = testElement.offsetHeight - testElement.clientHeight;
+				verticalScrollSize = testElement.offsetWidth - testElement.clientWidth;
+				document.body.removeChild(testElement);
+				head.removeChild(styleFixElement);
+
+				return {
+					vertical: verticalScrollSize,
+					horizontal: horizontalScrollSize
+				};
+			})();
 
 		function initElements(scrollableContainer) {
 			return {
