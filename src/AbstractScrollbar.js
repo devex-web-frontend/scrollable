@@ -143,7 +143,7 @@ export class AbstractScrollbar {
 	_toggle(bounds) {
 	}
 
-	//noinspection Eslint
+	/*eslint-disable valid-jsdoc*/
 	/**
 	 * @abstract
 	 * @protected
@@ -152,7 +152,7 @@ export class AbstractScrollbar {
 	_getMinBarSize() {
 	}
 
-	//noinspection Eslint
+	/*eslint-disable valid-jsdoc*/
 	/**
 	 * @abstract
 	 * @protected
