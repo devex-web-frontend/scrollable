@@ -41,17 +41,8 @@ const content = `
 
 const main = document.createElement('main');
 main.innerHTML = `
-	<style type="text/css">
-		.section {
-			width: 300px;
-			height: 300px;
-			overflow: hidden;
-			margin: 20px;
-			border: 1px solid grey;
-		}
-	</style>
 	<button class="button-detachAttach">Detach/Attach</button>
-	<section class="section section-new">
+	<section class="section section-new section-maxHeight">
 		${content}
 	</section>
 	<section class="section section-new">
