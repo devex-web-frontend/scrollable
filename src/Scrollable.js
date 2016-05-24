@@ -186,7 +186,7 @@ export class Scrollable extends Emitter {
 		});
 
 		//inline max height
-		const scrollableMaxHeight = window.getComputedStyle(this._scrollable).getPropertyValue('max-height');
+		const scrollableMaxHeight = window.getComputedStyle(this._container).getPropertyValue('max-height');
 		if (scrollableMaxHeight !== 'none') {
 			this._container.style.maxHeight = `${parseFloat(scrollableMaxHeight) + AbstractScrollbar.size.height}px`;
 		}
