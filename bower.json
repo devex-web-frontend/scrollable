@@ -1,6 +1,6 @@
 {
   "name": "scrollable",
-  "version": "6.1.3",
+  "version": "6.1.4",
   "private": true,
   "licence": "MPL-2.0",
   "main": "./src/Scrollable.ts",
