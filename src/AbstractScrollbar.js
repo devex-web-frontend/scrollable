@@ -2,6 +2,7 @@ import dom from 'dxjs/src/dx.dom.js';
 import bem from 'dx-util/src/bem/bem.js';
 
 export const CN_SCROLLBAR = 'scrollbar';
+const CN_SCROLLBAR__CONTAINER = bem(CN_SCROLLBAR, 'container');
 const CN_SCROLLBAR__BAR = bem(CN_SCROLLBAR, 'bar');
 const CN_SCROLLBAR__TRACK = bem(CN_SCROLLBAR, 'track');
 const CN_SCROLLBAR__BUTTON = bem(CN_SCROLLBAR, 'button');
@@ -143,7 +144,7 @@ export class AbstractScrollbar {
 	_toggle(bounds) {
 	}
 
-	//noinspection Eslint
+	/*eslint-disable valid-jsdoc*/
 	/**
 	 * @abstract
 	 * @protected
@@ -152,7 +153,7 @@ export class AbstractScrollbar {
 	_getMinBarSize() {
 	}
 
-	//noinspection Eslint
+	/*eslint-disable valid-jsdoc*/
 	/**
 	 * @abstract
 	 * @protected
@@ -369,6 +370,8 @@ export class AbstractScrollbar {
 	 */
 	static get size() {
 		if (!AbstractScrollbar._size) {
+			let stylesClearer = fixScrollStyles();
+
 			const dummy = document.createElement('div');
 			dummy.style.width = '100px';
 			dummy.style.height = '100px';
@@ -384,6 +387,8 @@ export class AbstractScrollbar {
 				height: dummy.offsetHeight - dummy.clientHeight
 			};
 			document.body.removeChild(dummy);
+
+			stylesClearer();
 		}
 		return AbstractScrollbar._size;
 	}
@@ -401,4 +406,28 @@ function getMouseWheelEventName() {
 	} else if ('onwheel' in document.documentElement) {
 		return 'wheel';
 	}
+}
+
+/**
+ * Apply necessary styles for proper computation of scrollbar sizes.
+ * It returns clearer function which removes all added styles from DOM.
+ * @returns {Function} clearer function, removing inlined styles from DOM
+ */
+function fixScrollStyles() {
+	let styleFixEl = document.createElement('style');
+	let styleFixText = `.${CN_SCROLLBAR__CONTAINER}::-webkit-scrollbar { display: none; }`;
+
+	styleFixEl.type = 'text/css';
+
+	if (styleFixEl.styleSheet) { // IE < 11
+		styleFixEl.styleSheet.cssText = styleFixText;
+	} else {
+		styleFixEl.innerHTML = styleFixText;
+	}
+
+	document.head.appendChild(styleFixEl);
+
+	return function() {
+		document.head.removeChild(styleFixEl);
+	};
 }
