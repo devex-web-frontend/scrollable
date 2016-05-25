@@ -373,6 +373,7 @@ export class AbstractScrollbar {
 			let stylesClearer = fixScrollStyles();
 
 			const dummy = document.createElement('div');
+			dummy.className = CN_SCROLLBAR__CONTAINER;
 			dummy.style.width = '100px';
 			dummy.style.height = '100px';
 			dummy.style.position = 'absolute';
