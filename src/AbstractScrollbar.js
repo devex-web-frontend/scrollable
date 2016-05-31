@@ -370,7 +370,7 @@ export class AbstractScrollbar {
 	 */
 	static get size() {
 		if (!AbstractScrollbar._size) {
-			let stylesClearer = fixScrollStyles();
+			fixScrollStyles();
 
 			const dummy = document.createElement('div');
 			dummy.className = CN_SCROLLBAR__CONTAINER;
@@ -388,8 +388,6 @@ export class AbstractScrollbar {
 				height: dummy.offsetHeight - dummy.clientHeight
 			};
 			document.body.removeChild(dummy);
-
-			stylesClearer();
 		}
 		return AbstractScrollbar._size;
 	}

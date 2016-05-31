@@ -11,7 +11,9 @@ import {
 	CN_SCROLLABLE__WRAPPER,
 	CN_SCROLLABLE__CONTAINER,
 	CN_SCROLLABLE__CONTENT,
-	CN_SCROLLABLE_RESIZEDETECTOR
+	CN_SCROLLABLE_RESIZEDETECTOR,
+	CN_WITHVERTICALSCROLLBAR,
+	CN_WITHHORIZONTALSCROLLBAR
 } from './Scrollable.constants';
 
 /**
@@ -163,6 +165,31 @@ export class Scrollable extends Emitter {
 		} else {
 			return Promise.resolve();
 		}
+	}
+
+	/**
+	 * Completely closes view and cleans DOM
+	 */
+	close() {
+		this._container.removeChild(this._content);
+		this._scrollable.classList.remove(CN_SCROLLABLE);
+		this._scrollable.classList.remove(CN_WITHVERTICALSCROLLBAR);
+		this._scrollable.classList.remove(CN_WITHHORIZONTALSCROLLBAR);
+		Array.from(this._scrollable.children).forEach(child => this._scrollable.removeChild(child));
+		this._content.removeChild(this._scrollableResizeDetector);
+		Array.from(this._content.children).forEach(child => {
+			this._content.removeChild(child);
+			this._scrollable.appendChild(child);
+		});
+
+		delete this['_contentResizeDetector'];
+		delete this['_scrollableResizeDetector'];
+		delete this['_verticalScrollbar'];
+		delete this['_horizontalScrollbar'];
+		delete this['_container'];
+		delete this['_scrollable'];
+		delete this['_wrapper'];
+		delete this['_content'];
 	}
 
 	/////////////
