@@ -1,9 +1,9 @@
 {
   "name": "scrollable",
-  "version": "6.1.4",
+  "version": "6.2.0",
   "private": true,
   "licence": "MPL-2.0",
-  "main": "./src/Scrollable.ts",
+  "main": "./src/Scrollable.js",
   "devDependencies": {
     "babel-core": "^6.7.7",
     "babel-eslint": "^4.1.8",
