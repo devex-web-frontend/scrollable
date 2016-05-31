@@ -42,6 +42,7 @@ const content = `
 const main = document.createElement('main');
 main.innerHTML = `
 	<button class="button-detachAttach">Detach/Attach</button>
+	<button class="button-close">Close</button>
 	<section class="section section-new section-maxHeight">
 		${content}
 	</section>
@@ -71,6 +72,9 @@ Array.from(main.querySelectorAll('.section-new')).forEach(section => {
 					});
 				}
 			}
+		});
+		main.querySelector('.button-close').addEventListener('click', e => {
+			scrollable.close();
 		});
 	}).catch(console.error.bind(console, 'init error'));
 });

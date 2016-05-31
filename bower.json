@@ -15,7 +15,7 @@
   ],
   "dependencies": {
     "dxjs": "devex-web-frontend/dxjs#~3.1.5",
-    "dx-util": "devex-web-frontend/dx-util#~0.6.0"
+    "dx-util": "devex-web-frontend/dx-util#~0.9.2"
   },
   "devDependencies": {}
 }
