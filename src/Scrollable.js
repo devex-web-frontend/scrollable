@@ -1,6 +1,6 @@
 import bem from 'dx-util/src/bem/bem.js';
 import dom from 'dxjs/src/dx.dom.js';
-import Emitter from 'dx-util/src/emitter/Emitter.ts';
+import Emitter from 'dx-util/src/emitter/Emitter';
 
 import {HorizontalScrollbar} from './HorizontalScrollbar';
 import {VerticalScrollbar} from './VerticalScrollbar';
