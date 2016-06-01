@@ -122,6 +122,17 @@ export class AbstractScrollbar {
 	////////////
 
 	/**
+	 * Disposes view
+	 */
+	close() {
+		this._wrapper.removeChild(this._scrollbar);
+		this._container.removeEventListener('scroll', this._onContainerScroll);
+		delete this['_scrollable'];
+		delete this['_container'];
+		delete this['_wrapper'];
+	}
+
+	/**
 	 * Updates scrollbar: visibility, ratio, size, position etc.
 	 */
 	update() {
