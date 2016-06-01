@@ -1,6 +1,8 @@
 import dom from 'dxjs/src/dx.dom.js';
 import bem from 'dx-util/src/bem/bem.js';
 
+import {CN_SCROLLABLE__CONTAINER} from './Scrollable.constants';
+
 export const CN_SCROLLBAR = 'scrollbar';
 const CN_SCROLLBAR__CONTAINER = bem(CN_SCROLLBAR, 'container');
 const CN_SCROLLBAR__BAR = bem(CN_SCROLLBAR, 'bar');
@@ -118,6 +120,17 @@ export class AbstractScrollbar {
 	////////////
 	// PUBLIC //
 	////////////
+
+	/**
+	 * Disposes view
+	 */
+	close() {
+		this._wrapper.removeChild(this._scrollbar);
+		this._container.removeEventListener('scroll', this._onContainerScroll);
+		delete this['_scrollable'];
+		delete this['_container'];
+		delete this['_wrapper'];
+	}
 
 	/**
 	 * Updates scrollbar: visibility, ratio, size, position etc.
@@ -414,7 +427,7 @@ function getMouseWheelEventName() {
  */
 function fixScrollStyles() {
 	let styleFixEl = document.createElement('style');
-	let styleFixText = `.${CN_SCROLLBAR__CONTAINER}::-webkit-scrollbar { display: none; }`;
+	let styleFixText = `.${CN_SCROLLABLE__CONTAINER}::-webkit-scrollbar { display: none; }`;
 
 	styleFixEl.type = 'text/css';
 

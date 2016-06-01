@@ -97,6 +97,12 @@ export class Scrollable extends Emitter {
 	 */
 	_isInitialized = false;
 
+	/**
+	 * @type {String}
+	 * @private
+	 */
+	_originalClassName = '';
+
 	////////////////
 	// CONTRUCTOR //
 	////////////////
@@ -171,16 +177,35 @@ export class Scrollable extends Emitter {
 	 * Completely closes view and cleans DOM
 	 */
 	close() {
-		this._container.removeChild(this._content);
-		this._scrollable.classList.remove(CN_SCROLLABLE);
-		this._scrollable.classList.remove(CN_WITHVERTICALSCROLLBAR);
-		this._scrollable.classList.remove(CN_WITHHORIZONTALSCROLLBAR);
-		Array.from(this._scrollable.children).forEach(child => this._scrollable.removeChild(child));
+		//dispose resize detectors
+		if (!this._isDetached) {
+			this._contentResizeDetector.contentWindow.removeEventListener('resize', this._onResize);
+			this._scrollableResizeDetector.contentWindow.removeEventListener('resize', this._onResize);
+		}
+		this._scrollable.removeChild(this._contentResizeDetector);
 		this._content.removeChild(this._scrollableResizeDetector);
-		Array.from(this._content.children).forEach(child => {
-			this._content.removeChild(child);
-			this._scrollable.appendChild(child);
-		});
+
+		//dispose scrollbars
+		this._horizontalScrollbar.close();
+		this._verticalScrollbar.close();
+
+		//clear default structure
+		this._container.className = this._originalClassName;
+		this._container.removeChild(this._content);
+		this._scrollable.removeChild(this._wrapper);
+		this._wrapper.removeChild(this._container);
+		this._scrollable.parentElement.insertBefore(this._container, this._scrollable);
+		this._scrollable.parentElement.removeChild(this._scrollable);
+
+		//move nodes from content to container
+		Array.from(this._content.children).forEach(child => this._container.appendChild(child));
+
+		//remove inlined styles
+		this._container.style.maxHeight = null;
+		this._container.style.marginRight = null;
+		this._container.style.marginBottom = null;
+		this._container.style.width = null;
+		this._container.style.height = null;
 
 		delete this['_contentResizeDetector'];
 		delete this['_scrollableResizeDetector'];
@@ -204,8 +229,10 @@ export class Scrollable extends Emitter {
 			className: CN_SCROLLABLE__WRAPPER
 		});
 
+		this._originalClassName = this._container.className || '';
+
 		this._scrollable = dom.createElement('div', {
-			className: [CN_SCROLLABLE, this._container.className]
+			className: [CN_SCROLLABLE, this._originalClassName]
 		});
 
 		this._content = dom.createElement('div', {
