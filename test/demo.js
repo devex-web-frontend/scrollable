@@ -53,28 +53,20 @@ main.innerHTML = `
 document.body.appendChild(main);
 Array.from(main.querySelectorAll('.section-new')).forEach(section => {
 	const scrollable = new Scrollable(section);
-	scrollable.init().then(result => {
-		const node = result.detail.block;
-		let attached = true;
-		let isReady = true;
-		main.querySelector('.button-detachAttach').addEventListener('click', e => {
-			if (isReady) {
-				if (attached) {
-					scrollable.notifyDetaching();
-					main.removeChild(node);
-					attached = false;
-				} else {
-					isReady = false;
-					main.appendChild(node);
-					scrollable.notifyAttached().then(() => {
-						attached = true;
-						isReady = true;
-					});
-				}
-			}
-		});
-		main.querySelector('.button-close').addEventListener('click', e => {
-			scrollable.close();
-		});
-	}).catch(console.error.bind(console, 'init error'));
+	const node = scrollable.result.detail.block;
+	let attached = true;
+	main.querySelector('.button-detachAttach').addEventListener('click', e => {
+		if (attached) {
+			scrollable.notifyDetaching();
+			main.removeChild(node);
+			attached = false;
+		} else {
+			main.appendChild(node);
+			scrollable.notifyAttached();
+			attached = true;
+		}
+	});
+	main.querySelector('.button-close').addEventListener('click', e => {
+		scrollable.close();
+	});
 });
