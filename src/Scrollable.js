@@ -95,13 +95,26 @@ export class Scrollable extends Emitter {
 	 * @type {boolean}
 	 * @private
 	 */
-	_isInitialized = false;
+	_isClosed = false;
 
 	/**
 	 * @type {String}
 	 * @private
 	 */
 	_originalClassName = '';
+
+	/**
+	 * @private
+	 * @type {Object}
+	 */
+	_result;
+
+	/**
+	 * @returns {Object}
+	 */
+	get result() {
+		return this._result;
+	}
 
 	////////////////
 	// CONTRUCTOR //
@@ -113,6 +126,18 @@ export class Scrollable extends Emitter {
 	constructor(container) {
 		super();
 		this._container = container;
+
+		this._render();
+		this._verticalScrollbar.update();
+		this._horizontalScrollbar.update();
+
+		this._result = {
+			detail: {
+				block: this._scrollable,
+				eventTarget: this._container,
+				elementContent: this._content
+			}
+		};
 	}
 
 	////////////
@@ -123,24 +148,18 @@ export class Scrollable extends Emitter {
 	 * @returns {Promise<TScrollableInitPayload|Error>}
 	 */
 	init() {
-		if (this._isInitialized) {
-			return Promise.reject(new Error('Cannot initialize Scrollable twice'));
-		}
-		this._isInitialized = true;
-		return this._render().then(() => {
-			this._verticalScrollbar.update();
-			this._horizontalScrollbar.update();
-			return {
-				detail: {
-					block: this._scrollable,
-					eventTarget: this._container,
-					elementContent: this._content
-				}
-			};
-		});
+		console.warn(
+			'DEPRECATION: ' +
+			'Scrollable initialization is not async anymore. Use scrollable.result instance value instead of ' +
+			'Scrollable.create and Scrollable#init methods.'
+		);
+		return Promise.resolve(this.result);
 	}
 
 	notifyDetaching() {
+		if (this._isClosed) {
+			throw new Error('Scrollable is closed');
+		}
 		if (!this._isDetached) {
 			if (!this._contentResizeDetector.contentWindow || !this._scrollableResizeDetector.contentWindow) {
 				throw new Error(
@@ -162,26 +181,37 @@ export class Scrollable extends Emitter {
 	 * @returns {Promise<void>}
 	 */
 	notifyAttached() {
+		if (this._isClosed) {
+			throw new Error('Scrollable is closed');
+		}
 		if (this._isDetached) {
 			this._isDetached = false;
-			return this._renderResizeDetectors().then(() => {
-				this._verticalScrollbar.update();
-				this._horizontalScrollbar.update();
-			});
-		} else {
-			return Promise.resolve();
+			this._renderResizeDetectors();
+			this._verticalScrollbar.update();
+			this._horizontalScrollbar.update();
 		}
+		return Object.assign(Promise.resolve(), {
+			then: function(cb) {
+				console.warn('DEPRECATION: Scrollable#notifyAttached is sync. Do not use it as Promise.');
+				cb();
+			}
+		});
 	}
 
 	/**
 	 * Completely closes view and cleans DOM
 	 */
 	close() {
-		//dispose resize detectors
-		if (!this._isDetached) {
-			this._contentResizeDetector.contentWindow.removeEventListener('resize', this._onResize);
-			this._scrollableResizeDetector.contentWindow.removeEventListener('resize', this._onResize);
+		if (this._isClosed) {
+			throw new Error('Scrollable is already closed');
 		}
+		if (this._isDetached) {
+			throw new Error('Cannot close detached scrollable because parentElement is not accessible to restore ' +
+				'default dom structure');
+		}
+		//dispose resize detectors
+		this._contentResizeDetector.contentWindow.removeEventListener('resize', this._onResize);
+		this._scrollableResizeDetector.contentWindow.removeEventListener('resize', this._onResize);
 		this._scrollable.removeChild(this._contentResizeDetector);
 		this._content.removeChild(this._scrollableResizeDetector);
 
@@ -215,13 +245,14 @@ export class Scrollable extends Emitter {
 		delete this['_scrollable'];
 		delete this['_wrapper'];
 		delete this['_content'];
+
+		this._isClosed = true;
 	}
 
 	/////////////
 	// PRIVATE //
 	/////////////
 	/**
-	 * @returns {Promise.<any>}
 	 * @private
 	 */
 	_render() {
@@ -259,7 +290,7 @@ export class Scrollable extends Emitter {
 		this._renderScrollbars();
 
 		//render resize detectors
-		return this._renderResizeDetectors();
+		this._renderResizeDetectors();
 	}
 
 	/**
@@ -271,58 +302,22 @@ export class Scrollable extends Emitter {
 	}
 
 	/**
-	 * @returns {Promise<any>}
 	 * @private
 	 */
 	_renderResizeDetectors() {
-		return Promise.all([
-			//the point here is to wait for initial resize event of created iframe and then continue initialization
-			new Promise((resolve, reject) => {
-				this._contentResizeDetector = dom.createElement('iframe', {
-					className: CN_SCROLLABLE_RESIZEDETECTOR,
-					src: generateIframeSource()
-				});
-				/**
-				 * @param {Event} e
-				 */
-				const onFirstResize = e => {
-					this._contentResizeDetector.contentWindow.removeEventListener('resize', onFirstResize);
-					this._contentResizeDetector.contentWindow.addEventListener('resize', this._onResize);
-					resolve();
-				};
-				this._scrollable.appendChild(this._contentResizeDetector);
-				if (!this._contentResizeDetector.contentWindow) {
-					throw new Error('' +
-						'Cannot find contentWindow!' +
-						'Probably Scrollable#init is called before attaching to DOM'
-					);
-				}
-				this._contentResizeDetector.contentWindow.addEventListener('resize', onFirstResize);
-			}),
+		this._contentResizeDetector = dom.createElement('iframe', {
+			className: CN_SCROLLABLE_RESIZEDETECTOR,
+			src: generateIframeSource()
+		});
+		this._scrollable.appendChild(this._contentResizeDetector);
+		this._contentResizeDetector.contentWindow.addEventListener('resize', this._onResize);
 
-			new Promise((resolve, reject) => {
-				this._scrollableResizeDetector = dom.createElement('iframe', {
-					className: CN_SCROLLABLE_RESIZEDETECTOR,
-					src: generateIframeSource()
-				});
-				/**
-				 * @param {Event} e
-				 */
-				const onFirstResize = e => {
-					this._scrollableResizeDetector.contentWindow.removeEventListener('resize', onFirstResize);
-					this._scrollableResizeDetector.contentWindow.addEventListener('resize', this._onResize);
-					resolve();
-				};
-				this._content.appendChild(this._scrollableResizeDetector);
-				if (!this._scrollableResizeDetector.contentWindow) {
-					throw new Error('' +
-						'Cannot find contentWindow!' +
-						'Probably Scrollable#init is called before attaching to DOM'
-					);
-				}
-				this._scrollableResizeDetector.contentWindow.addEventListener('resize', onFirstResize);
-			})
-		]);
+		this._scrollableResizeDetector = dom.createElement('iframe', {
+			className: CN_SCROLLABLE_RESIZEDETECTOR,
+			src: generateIframeSource()
+		});
+		this._content.appendChild(this._scrollableResizeDetector);
+		this._scrollableResizeDetector.contentWindow.addEventListener('resize', this._onResize);
 	}
 
 	////////////////////////
