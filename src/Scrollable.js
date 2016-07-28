@@ -1,5 +1,3 @@
-import bem from 'dx-util/src/bem/bem.js';
-import dom from 'dxjs/src/dx.dom.js';
 import Emitter from 'dx-util/src/emitter/Emitter';
 
 import {HorizontalScrollbar} from './HorizontalScrollbar';
@@ -11,9 +9,7 @@ import {
 	CN_SCROLLABLE__WRAPPER,
 	CN_SCROLLABLE__CONTAINER,
 	CN_SCROLLABLE__CONTENT,
-	CN_SCROLLABLE_RESIZEDETECTOR,
-	CN_WITHVERTICALSCROLLBAR,
-	CN_WITHHORIZONTALSCROLLBAR
+	CN_SCROLLABLE_RESIZEDETECTOR
 } from './Scrollable.constants';
 
 /**
@@ -256,19 +252,16 @@ export class Scrollable extends Emitter {
 	 * @private
 	 */
 	_render() {
-		this._wrapper = dom.createElement('div', {
-			className: CN_SCROLLABLE__WRAPPER
-		});
+		this._wrapper = document.createElement('div');
+		this._wrapper.className = CN_SCROLLABLE__WRAPPER;
 
 		this._originalClassName = this._container.className || '';
 
-		this._scrollable = dom.createElement('div', {
-			className: [CN_SCROLLABLE, this._originalClassName]
-		});
+		this._scrollable = document.createElement('div');
+		this._scrollable.className = `${CN_SCROLLABLE} ${this._originalClassName}`;
 
-		this._content = dom.createElement('div', {
-			className: CN_SCROLLABLE__CONTENT
-		});
+		this._content = document.createElement('div');
+		this._content.className = CN_SCROLLABLE__CONTENT;
 
 		//inline max height
 		const scrollableMaxHeight = window.getComputedStyle(this._container).getPropertyValue('max-height');
@@ -305,17 +298,17 @@ export class Scrollable extends Emitter {
 	 * @private
 	 */
 	_renderResizeDetectors() {
-		this._contentResizeDetector = dom.createElement('iframe', {
-			className: CN_SCROLLABLE_RESIZEDETECTOR,
-			src: generateIframeSource()
-		});
+		this._contentResizeDetector = document.createElement('iframe');
+		this._contentResizeDetector.className = CN_SCROLLABLE_RESIZEDETECTOR;
+		this._contentResizeDetector.src = generateIframeSource();
+
 		this._scrollable.appendChild(this._contentResizeDetector);
 		this._contentResizeDetector.contentWindow.addEventListener('resize', this._onResize);
 
-		this._scrollableResizeDetector = dom.createElement('iframe', {
-			className: CN_SCROLLABLE_RESIZEDETECTOR,
-			src: generateIframeSource()
-		});
+		this._scrollableResizeDetector = document.createElement('iframe');
+		this._scrollableResizeDetector.className = CN_SCROLLABLE_RESIZEDETECTOR;
+		this._scrollableResizeDetector.src = generateIframeSource();
+
 		this._content.appendChild(this._scrollableResizeDetector);
 		this._scrollableResizeDetector.contentWindow.addEventListener('resize', this._onResize);
 	}

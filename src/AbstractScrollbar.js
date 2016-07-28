@@ -1,10 +1,8 @@
-import dom from 'dxjs/src/dx.dom.js';
 import bem from 'dx-util/src/bem/bem.js';
 
 import {CN_SCROLLABLE__CONTAINER} from './Scrollable.constants';
 
 export const CN_SCROLLBAR = 'scrollbar';
-const CN_SCROLLBAR__CONTAINER = bem(CN_SCROLLBAR, 'container');
 const CN_SCROLLBAR__BAR = bem(CN_SCROLLBAR, 'bar');
 const CN_SCROLLBAR__TRACK = bem(CN_SCROLLBAR, 'track');
 const CN_SCROLLBAR__BUTTON = bem(CN_SCROLLBAR, 'button');
@@ -187,48 +185,46 @@ export class AbstractScrollbar {
 	 */
 	_render() {
 		//bar
-		this._bar = dom.createElement('div', {
-			className: CN_SCROLLBAR__BAR
-		});
+		this._bar = document.createElement('div');
+		this._bar.className = CN_SCROLLBAR__BAR;
 		this._bar.addEventListener('mousedown', this._onBarMouseDown);
 		this._bar.addEventListener('click', this._onBarClick);
 
 		//track
-		this._track = dom.createElement('div', {
-			className: CN_SCROLLBAR__TRACK
-		});
+		this._track = document.createElement('div')
+		this._track.className = CN_SCROLLBAR__TRACK;
 		this._track.appendChild(this._bar);
 		this._track.addEventListener(getMouseWheelEventName(), e => this._onTrackMouseWheel(e), true);
 		this._track.addEventListener('click', e => this._onTrackClick(e));
 
 		//button to start
-		this._buttonToStart = dom.createElement('button', {
-			className: CN_SCROLLBAR__BUTTON_TOSTART
-		});
+		this._buttonToStart = document.createElement('button');
+		this._buttonToStart.className = CN_SCROLLBAR__BUTTON_TOSTART;
+
 		this._buttonToStart.addEventListener('click', e => this._onButtonToStartClick(e));
 
 		//button to end
-		this._buttonToEnd = dom.createElement('button', {
-			className: CN_SCROLLBAR__BUTTON_TOEND
-		});
+		this._buttonToEnd = document.createElement('button');
+		this._buttonToEnd.className = CN_SCROLLBAR__BUTTON_TOEND;
+
 		this._buttonToEnd.addEventListener('click', e => this._onButtonToEndClick(e));
 
 		//button forward
-		this._buttonForward = dom.createElement('button', {
-			className: CN_SCROLLBAR__BUTTON_FORWARD
-		});
+		this._buttonForward = document.createElement('button');
+		this._buttonForward.className = CN_SCROLLBAR__BUTTON_FORWARD;
+
 		this._buttonForward.addEventListener('click', e => this._onButtonForwardClick(e));
 
 		//button backward
-		this._buttonBackward = dom.createElement('button', {
-			className: CN_SCROLLBAR__BUTTON_BACKWARD
-		});
+		this._buttonBackward = document.createElement('button');
+		this._buttonBackward.className = CN_SCROLLBAR__BUTTON_BACKWARD;
+
 		this._buttonBackward.addEventListener('click', e => this._onButtonBackwardClick(e));
 
 		//scrollbar
-		this._scrollbar = dom.createElement('div', {
-			className: CN_SCROLLBAR
-		});
+		this._scrollbar = document.createElement('div');
+		this._scrollbar.className = CN_SCROLLBAR;
+
 		this._scrollbar.appendChild(this._buttonToStart);
 		this._scrollbar.appendChild(this._buttonBackward);
 		this._scrollbar.appendChild(this._track);
