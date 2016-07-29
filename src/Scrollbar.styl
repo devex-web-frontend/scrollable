@@ -27,10 +27,10 @@
 		padding: ($scrollableScrollBarButtonSize + $scrollableScrollBarExtremeButtonSize) 0;
 		width: $scrollableScrollBarSize;
 
-		.scrollable-withVerticalScrollbar & {
+		.scrollable-withVerticalScrollbar > .scrollable--wrapper > & {
 			show();
 		}
-		.scrollable-withHorizontalScrollbar & {
+		.scrollable-withHorizontalScrollbar > .scrollable--wrapper > & {
 			bottom: $scrollableScrollBarSize;
 		}
 	}
@@ -42,10 +42,10 @@
 		padding: 0 ($scrollableScrollBarButtonSize + $scrollableScrollBarExtremeButtonSize);
 		height: $scrollableScrollBarSize;
 
-		.scrollable-withHorizontalScrollbar & {
+		.scrollable-withHorizontalScrollbar > .scrollable--wrapper > & {
 			show();
 		}
-		.scrollable-withVerticalScrollbar & {
+		.scrollable-withVerticalScrollbar > .scrollable--wrapper > & {
 			right: $scrollableScrollBarSize;
 		}
 	}
