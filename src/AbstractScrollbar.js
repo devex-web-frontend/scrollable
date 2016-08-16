@@ -191,7 +191,7 @@ export class AbstractScrollbar {
 		this._bar.addEventListener('click', this._onBarClick);
 
 		//track
-		this._track = document.createElement('div')
+		this._track = document.createElement('div');
 		this._track.className = CN_SCROLLBAR__TRACK;
 		this._track.appendChild(this._bar);
 		this._track.addEventListener(getMouseWheelEventName(), e => this._onTrackMouseWheel(e), true);

@@ -340,7 +340,19 @@ export class Scrollable extends Emitter {
 	}
 }
 
-//http://stackoverflow.com/a/2487023/1961479
+// http://stackoverflow.com/a/2487023/1961479
 function generateIframeSource() {
-	return `javascript:(function(){document.open();document.domain='${document.domain}';document.close();})()`;
+	if (isIE()) {
+		return 'about:blank';
+	} else {
+		return `javascript:(function(){document.open();document.domain='${document.domain}';document.close();})()`;
+	}
+}
+
+/**
+ * @returns {boolean}
+ */
+function isIE() {
+	const ua = window.navigator.userAgent;
+	return ua.indexOf('MSIE ') > 0 || ua.indexOf('Trident/') > 0 || ua.indexOf('Edge/') > 0;
 }
