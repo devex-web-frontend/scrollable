@@ -7,4 +7,3 @@ export const CN_WITHHORIZONTALSCROLLBAR = modifier(CN_SCROLLABLE, 'withHorizonta
 export const CN_SCROLLABLE__WRAPPER = bem(CN_SCROLLABLE, 'wrapper');
 export const CN_SCROLLABLE__CONTAINER = bem(CN_SCROLLABLE, 'container');
 export const CN_SCROLLABLE__CONTENT = bem(CN_SCROLLABLE, 'content');
-export const CN_SCROLLABLE_RESIZEDETECTOR = bem(CN_SCROLLABLE, 'resizeDetector');

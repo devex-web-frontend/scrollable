@@ -3,13 +3,17 @@ import Emitter from 'dx-util/src/emitter/Emitter';
 import {HorizontalScrollbar} from './HorizontalScrollbar';
 import {VerticalScrollbar} from './VerticalScrollbar';
 import {AbstractScrollbar} from './AbstractScrollbar';
+import elementResizeDetectorMaker from 'element-resize-detector';
+
+const erd = elementResizeDetectorMaker({
+	strategy: "scroll"
+});
 
 import {
 	CN_SCROLLABLE,
 	CN_SCROLLABLE__WRAPPER,
 	CN_SCROLLABLE__CONTAINER,
-	CN_SCROLLABLE__CONTENT,
-	CN_SCROLLABLE_RESIZEDETECTOR
+	CN_SCROLLABLE__CONTENT
 } from './Scrollable.constants';
 
 /**
@@ -62,16 +66,6 @@ export class Scrollable extends Emitter {
 	 * @private
 	 */
 	_content;
-	/**
-	 * @type {HTMLIFrameElement}
-	 * @private
-	 */
-	_contentResizeDetector;
-	/**
-	 * @type {HTMLIFrameElement}
-	 * @private
-	 */
-	_scrollableResizeDetector;
 	/**
 	 * @type {AbstractScrollbar}
 	 * @private
@@ -157,18 +151,8 @@ export class Scrollable extends Emitter {
 			throw new Error('Scrollable is closed');
 		}
 		if (!this._isDetached) {
-			if (!this._contentResizeDetector.contentWindow || !this._scrollableResizeDetector.contentWindow) {
-				throw new Error(
-					'Cannot find contentWindows! ' +
-					'Probably Scrollable#notifyDetaching is called after detaching from DOM'
-				);
-			}
-			this._contentResizeDetector.contentWindow.removeEventListener('resize', this._onResize);
-			this._scrollable.removeChild(this._contentResizeDetector);
-			delete this['_contentResizeDetector'];
-			this._scrollableResizeDetector.contentDocument.removeEventListener('resize', this._onResize);
-			this._content.removeChild(this._scrollableResizeDetector);
-			delete this['_scrollableResizeDetector'];
+			erd.removeAllListeners(this._scrollable);
+			erd.removeAllListeners(this._content);
 			this._isDetached = true;
 		}
 	}
@@ -182,7 +166,7 @@ export class Scrollable extends Emitter {
 		}
 		if (this._isDetached) {
 			this._isDetached = false;
-			this._renderResizeDetectors();
+			this._attachResizeDetector();
 			this._verticalScrollbar.update();
 			this._horizontalScrollbar.update();
 		}
@@ -205,11 +189,8 @@ export class Scrollable extends Emitter {
 			throw new Error('Cannot close detached scrollable because parentElement is not accessible to restore ' +
 				'default dom structure');
 		}
-		//dispose resize detectors
-		this._contentResizeDetector.contentWindow.removeEventListener('resize', this._onResize);
-		this._scrollableResizeDetector.contentWindow.removeEventListener('resize', this._onResize);
-		this._scrollable.removeChild(this._contentResizeDetector);
-		this._content.removeChild(this._scrollableResizeDetector);
+		erd.uninstall(this._scrollable);
+		erd.uninstall(this._content);
 
 		//dispose scrollbars
 		this._horizontalScrollbar.close();
@@ -232,9 +213,7 @@ export class Scrollable extends Emitter {
 		this._container.style.marginBottom = null;
 		this._container.style.width = null;
 		this._container.style.height = null;
-
-		delete this['_contentResizeDetector'];
-		delete this['_scrollableResizeDetector'];
+		
 		delete this['_verticalScrollbar'];
 		delete this['_horizontalScrollbar'];
 		delete this['_container'];
@@ -281,9 +260,7 @@ export class Scrollable extends Emitter {
 
 		//finally render scrollbars
 		this._renderScrollbars();
-
-		//render resize detectors
-		this._renderResizeDetectors();
+		this._attachResizeDetector();
 	}
 
 	/**
@@ -297,20 +274,11 @@ export class Scrollable extends Emitter {
 	/**
 	 * @private
 	 */
-	_renderResizeDetectors() {
-		this._contentResizeDetector = document.createElement('iframe');
-		this._contentResizeDetector.className = CN_SCROLLABLE_RESIZEDETECTOR;
-		this._contentResizeDetector.src = generateIframeSource();
-
-		this._scrollable.appendChild(this._contentResizeDetector);
-		this._contentResizeDetector.contentWindow.addEventListener('resize', this._onResize);
-
-		this._scrollableResizeDetector = document.createElement('iframe');
-		this._scrollableResizeDetector.className = CN_SCROLLABLE_RESIZEDETECTOR;
-		this._scrollableResizeDetector.src = generateIframeSource();
-
-		this._content.appendChild(this._scrollableResizeDetector);
-		this._scrollableResizeDetector.contentWindow.addEventListener('resize', this._onResize);
+	_attachResizeDetector() {
+		erd.listenTo(this._scrollable, this._onResize);
+		erd.listenTo(this._content, this._onResize);
+		//addResizeListener(this._scrollable, this._onResize);
+		//addResizeListener(this._content, this._onResize);
 	}
 
 	////////////////////////
