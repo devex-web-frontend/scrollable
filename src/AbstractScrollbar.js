@@ -134,7 +134,16 @@ export class AbstractScrollbar {
 	 * Updates scrollbar: visibility, ratio, size, position etc.
 	 */
 	update() {
-		this._toggle(this._container.getBoundingClientRect());
+		let bounds = this._container.getBoundingClientRect();
+		const {width, height} = AbstractScrollbar.size;
+		if(width && height) {
+			bounds = {
+				...bounds,
+				width: bounds.width - width,
+				height: bounds.height - height
+			}
+		};
+		this._toggle(bounds);
 		this._ratio = this._getRatio();
 		this._updateBar();
 	}
