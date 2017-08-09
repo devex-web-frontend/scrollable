@@ -1,6 +1,5 @@
-import {AbstractScrollbar, BUTTON_SCROLL_STEP} from './AbstractScrollbar';
+import {AbstractScrollbar, BUTTON_SCROLL_STEP, CN_SCROLLBAR} from './AbstractScrollbar';
 import {modifier} from 'dx-util/src/bem/bem.js';
-import {CN_SCROLLBAR} from './AbstractScrollbar';
 import {CN_WITHVERTICALSCROLLBAR} from './Scrollable.constants';
 const MOD_VERTICAL = 'vertical';
 
@@ -103,8 +102,8 @@ export class VerticalScrollbar extends AbstractScrollbar {
 		this._scrollbar.classList.add(modifier(CN_SCROLLBAR, MOD_VERTICAL));
 
 		//hide native scrollbar
-		this._container.style.marginRight = -AbstractScrollbar.size.width + 'px';
-		this._container.style.width = 'calc(100% + ' + AbstractScrollbar.size.width + 'px)';
+		this._container.style.marginRight = `${-AbstractScrollbar.size.width}px`;
+		this._container.style.width = `calc(100% + ${AbstractScrollbar.size.width}px)`;
 	}
 
 	////////////////////////

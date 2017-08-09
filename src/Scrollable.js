@@ -6,7 +6,7 @@ import {AbstractScrollbar} from './AbstractScrollbar';
 import elementResizeDetectorMaker from 'element-resize-detector';
 
 const erd = elementResizeDetectorMaker({
-	strategy: "scroll"
+	strategy: 'scroll'
 });
 
 import {
@@ -171,7 +171,7 @@ export class Scrollable extends Emitter {
 			this._horizontalScrollbar.update();
 		}
 		return Object.assign(Promise.resolve(), {
-			then: function(cb) {
+			then(cb) {
 				console.warn('DEPRECATION: Scrollable#notifyAttached is sync. Do not use it as Promise.');
 				cb();
 			}
@@ -213,7 +213,7 @@ export class Scrollable extends Emitter {
 		this._container.style.marginBottom = null;
 		this._container.style.width = null;
 		this._container.style.height = null;
-		
+
 		delete this['_verticalScrollbar'];
 		delete this['_horizontalScrollbar'];
 		delete this['_container'];
@@ -309,6 +309,9 @@ export class Scrollable extends Emitter {
 }
 
 // http://stackoverflow.com/a/2487023/1961479
+/**
+ * @returns {string}
+ */
 function generateIframeSource() {
 	if (isIE()) {
 		return 'about:blank';
