@@ -277,8 +277,6 @@ export class Scrollable extends Emitter {
 	_attachResizeDetector() {
 		erd.listenTo(this._scrollable, this._onResize);
 		erd.listenTo(this._content, this._onResize);
-		//addResizeListener(this._scrollable, this._onResize);
-		//addResizeListener(this._content, this._onResize);
 	}
 
 	////////////////////////
