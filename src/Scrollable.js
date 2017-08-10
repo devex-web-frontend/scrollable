@@ -1,13 +1,9 @@
 import Emitter from 'dx-util/src/emitter/Emitter';
-
+import {DISPOSABLE} from 'dx-util/src/function/disposable';
 import {HorizontalScrollbar} from './HorizontalScrollbar';
 import {VerticalScrollbar} from './VerticalScrollbar';
 import {AbstractScrollbar} from './AbstractScrollbar';
-import elementResizeDetectorMaker from 'element-resize-detector';
-
-const erd = elementResizeDetectorMaker({
-	strategy: 'scroll'
-});
+import {addResizeListener} from './ResizeDetector';
 
 import {
 	CN_SCROLLABLE,
@@ -42,6 +38,7 @@ import './Scrollable.styl';
  * @class Scrollable
  * @extends Emitter
  */
+ @DISPOSABLE
 export class Scrollable extends Emitter {
 	////////////
 	// FIELDS //
@@ -151,8 +148,7 @@ export class Scrollable extends Emitter {
 			throw new Error('Scrollable is closed');
 		}
 		if (!this._isDetached) {
-			erd.removeAllListeners(this._scrollable);
-			erd.removeAllListeners(this._content);
+			this.dispose();
 			this._isDetached = true;
 		}
 	}
@@ -189,8 +185,7 @@ export class Scrollable extends Emitter {
 			throw new Error('Cannot close detached scrollable because parentElement is not accessible to restore ' +
 				'default dom structure');
 		}
-		erd.uninstall(this._scrollable);
-		erd.uninstall(this._content);
+		this.dispose();
 
 		//dispose scrollbars
 		this._horizontalScrollbar.close();
@@ -275,8 +270,10 @@ export class Scrollable extends Emitter {
 	 * @private
 	 */
 	_attachResizeDetector() {
-		erd.listenTo(this._scrollable, this._onResize);
-		erd.listenTo(this._content, this._onResize);
+		this._using([
+			addResizeListener(this._scrollable, this._onResize),
+			addResizeListener(this._content, this._onResize)
+		]);
 	}
 
 	////////////////////////
