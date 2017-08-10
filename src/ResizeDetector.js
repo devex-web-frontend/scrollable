@@ -23,7 +23,6 @@ const resizeListener = event => {
  * @param {Function} fn
  */
 function removeResizeListener(element, fn) {
-	console.log('removeResizeListener');
 	element[RESIZE_LISTENERS_KEY].splice(element[RESIZE_LISTENERS_KEY].indexOf(fn), 1);
 	if (!element[RESIZE_LISTENERS_KEY].length) {
 		if (attachEvent) {
