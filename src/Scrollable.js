@@ -2,6 +2,7 @@ import Emitter from 'dx-util/src/emitter/Emitter';
 import {HorizontalScrollbar} from './HorizontalScrollbar';
 import {VerticalScrollbar} from './VerticalScrollbar';
 import {AbstractScrollbar} from './AbstractScrollbar';
+import {raf} from '../util/raf';
 import detectorFactory from 'element-resize-detector';
 
 const detector = detectorFactory({
@@ -285,13 +286,16 @@ export class Scrollable extends Emitter {
 	////////////////////////
 
 	/**
-	 * @param {Event} e
+	 * @param {Event} event
 	 * @protected
 	 */
-	_onResize = e => {
-		this._verticalScrollbar.update();
-		this._horizontalScrollbar.update();
-		this._emit(EVENT_SCROLLABLE.UPDATE);
+	_onResize = event => {
+		const onResize = () => {
+			this._verticalScrollbar.update();
+			this._horizontalScrollbar.update();
+			this._emit(EVENT_SCROLLABLE.UPDATE);
+		};
+		raf(onResize());
 	}
 
 	////////////
