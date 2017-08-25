@@ -1,9 +1,12 @@
 import Emitter from 'dx-util/src/emitter/Emitter';
-import {DISPOSABLE} from 'dx-util/src/function/disposable';
 import {HorizontalScrollbar} from './HorizontalScrollbar';
 import {VerticalScrollbar} from './VerticalScrollbar';
 import {AbstractScrollbar} from './AbstractScrollbar';
-import {addResizeListener} from './ResizeDetector';
+import detectorFactory from 'element-resize-detector';
+
+const detector = detectorFactory({
+	strategy: 'scroll'
+});
 
 import {
 	CN_SCROLLABLE,
@@ -22,6 +25,7 @@ export const EVENT_SCROLLABLE = {
 /**
  * @typedef {Object} TScrollableInitPayloadDetail
  * @property {HTMLElement} block
+ * @property {HTMLElement} block
  * @property {HTMLElement} eventTarget
  * @property {HTMLElement} elementContent
  */
@@ -38,7 +42,6 @@ import './Scrollable.styl';
  * @class Scrollable
  * @extends Emitter
  */
- @DISPOSABLE
 export class Scrollable extends Emitter {
 	////////////
 	// FIELDS //
@@ -191,6 +194,9 @@ export class Scrollable extends Emitter {
 		this._horizontalScrollbar.close();
 		this._verticalScrollbar.close();
 
+		detector.uninstall(this._scrollable);
+		detector.uninstall(this._content);
+
 		//clear default structure
 		this._container.className = this._originalClassName;
 		this._container.removeChild(this._content);
@@ -270,10 +276,8 @@ export class Scrollable extends Emitter {
 	 * @private
 	 */
 	_attachResizeDetector() {
-		this._using([
-			addResizeListener(this._scrollable, this._onResize),
-			addResizeListener(this._content, this._onResize)
-		]);
+		detector.listenTo(this._scrollable, this._onResize);
+		detector.listenTo(this._content, this._onResize);
 	}
 
 	////////////////////////

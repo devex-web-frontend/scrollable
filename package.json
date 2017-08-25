@@ -34,6 +34,7 @@
     "start": "webpack-dev-server --config ./config/webpack.babel.js --inline --hot"
   },
   "dependencies": {
+    "element-resize-detector": "^1.1.12",
     "core-js": "^2.5.0",
     "estraverse-fb": "^1.3.2"
   }
