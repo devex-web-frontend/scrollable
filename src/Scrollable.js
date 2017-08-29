@@ -289,14 +289,11 @@ export class Scrollable extends Emitter {
 	 * @param {Event} event
 	 * @protected
 	 */
-	_onResize = event => {
-		const onResize = () => {
-			this._verticalScrollbar.update();
-			this._horizontalScrollbar.update();
-			this._emit(EVENT_SCROLLABLE.UPDATE);
-		};
-		raf(onResize());
-	}
+	 _onResize = raf(() => {
+		 this._verticalScrollbar.update();
+		 this._horizontalScrollbar.update();
+		 this._emit(EVENT_SCROLLABLE.UPDATE);
+	 })
 
 	////////////
 	// STATIC //

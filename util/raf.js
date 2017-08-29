@@ -9,7 +9,6 @@ export const raf = (cb) => {
 
 	// eslint-disable-next-line
 	function synced(...args) {
-		console.log('test');
 		if (typeof id === 'undefined') {
 			id = requestAnimationFrame(invoke(this, args));
 		}
