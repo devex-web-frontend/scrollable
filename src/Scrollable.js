@@ -1,15 +1,19 @@
 import Emitter from 'dx-util/src/emitter/Emitter';
-
 import {HorizontalScrollbar} from './HorizontalScrollbar';
 import {VerticalScrollbar} from './VerticalScrollbar';
 import {AbstractScrollbar} from './AbstractScrollbar';
+import {raf} from '../util/raf';
+import detectorFactory from 'element-resize-detector';
+
+const detector = detectorFactory({
+	strategy: 'scroll'
+});
 
 import {
 	CN_SCROLLABLE,
 	CN_SCROLLABLE__WRAPPER,
 	CN_SCROLLABLE__CONTAINER,
-	CN_SCROLLABLE__CONTENT,
-	CN_SCROLLABLE_RESIZEDETECTOR
+	CN_SCROLLABLE__CONTENT
 } from './Scrollable.constants';
 
 /**
@@ -21,6 +25,7 @@ export const EVENT_SCROLLABLE = {
 
 /**
  * @typedef {Object} TScrollableInitPayloadDetail
+ * @property {HTMLElement} block
  * @property {HTMLElement} block
  * @property {HTMLElement} eventTarget
  * @property {HTMLElement} elementContent
@@ -62,16 +67,6 @@ export class Scrollable extends Emitter {
 	 * @private
 	 */
 	_content;
-	/**
-	 * @type {HTMLIFrameElement}
-	 * @private
-	 */
-	_contentResizeDetector;
-	/**
-	 * @type {HTMLIFrameElement}
-	 * @private
-	 */
-	_scrollableResizeDetector;
 	/**
 	 * @type {AbstractScrollbar}
 	 * @private
@@ -157,18 +152,7 @@ export class Scrollable extends Emitter {
 			throw new Error('Scrollable is closed');
 		}
 		if (!this._isDetached) {
-			if (!this._contentResizeDetector.contentWindow || !this._scrollableResizeDetector.contentWindow) {
-				throw new Error(
-					'Cannot find contentWindows! ' +
-					'Probably Scrollable#notifyDetaching is called after detaching from DOM'
-				);
-			}
-			this._contentResizeDetector.contentWindow.removeEventListener('resize', this._onResize);
-			this._scrollable.removeChild(this._contentResizeDetector);
-			delete this['_contentResizeDetector'];
-			this._scrollableResizeDetector.contentDocument.removeEventListener('resize', this._onResize);
-			this._content.removeChild(this._scrollableResizeDetector);
-			delete this['_scrollableResizeDetector'];
+			this.dispose();
 			this._isDetached = true;
 		}
 	}
@@ -182,12 +166,12 @@ export class Scrollable extends Emitter {
 		}
 		if (this._isDetached) {
 			this._isDetached = false;
-			this._renderResizeDetectors();
+			this._attachResizeDetector();
 			this._verticalScrollbar.update();
 			this._horizontalScrollbar.update();
 		}
 		return Object.assign(Promise.resolve(), {
-			then: function(cb) {
+			then(cb) {
 				console.warn('DEPRECATION: Scrollable#notifyAttached is sync. Do not use it as Promise.');
 				cb();
 			}
@@ -205,15 +189,14 @@ export class Scrollable extends Emitter {
 			throw new Error('Cannot close detached scrollable because parentElement is not accessible to restore ' +
 				'default dom structure');
 		}
-		//dispose resize detectors
-		this._contentResizeDetector.contentWindow.removeEventListener('resize', this._onResize);
-		this._scrollableResizeDetector.contentWindow.removeEventListener('resize', this._onResize);
-		this._scrollable.removeChild(this._contentResizeDetector);
-		this._content.removeChild(this._scrollableResizeDetector);
+		this.dispose();
 
 		//dispose scrollbars
 		this._horizontalScrollbar.close();
 		this._verticalScrollbar.close();
+
+		detector.uninstall(this._scrollable);
+		detector.uninstall(this._content);
 
 		//clear default structure
 		this._container.className = this._originalClassName;
@@ -233,8 +216,6 @@ export class Scrollable extends Emitter {
 		this._container.style.width = null;
 		this._container.style.height = null;
 
-		delete this['_contentResizeDetector'];
-		delete this['_scrollableResizeDetector'];
 		delete this['_verticalScrollbar'];
 		delete this['_horizontalScrollbar'];
 		delete this['_container'];
@@ -281,9 +262,7 @@ export class Scrollable extends Emitter {
 
 		//finally render scrollbars
 		this._renderScrollbars();
-
-		//render resize detectors
-		this._renderResizeDetectors();
+		this._attachResizeDetector();
 	}
 
 	/**
@@ -297,20 +276,9 @@ export class Scrollable extends Emitter {
 	/**
 	 * @private
 	 */
-	_renderResizeDetectors() {
-		this._contentResizeDetector = document.createElement('iframe');
-		this._contentResizeDetector.className = CN_SCROLLABLE_RESIZEDETECTOR;
-		this._contentResizeDetector.src = generateIframeSource();
-
-		this._scrollable.appendChild(this._contentResizeDetector);
-		this._contentResizeDetector.contentWindow.addEventListener('resize', this._onResize);
-
-		this._scrollableResizeDetector = document.createElement('iframe');
-		this._scrollableResizeDetector.className = CN_SCROLLABLE_RESIZEDETECTOR;
-		this._scrollableResizeDetector.src = generateIframeSource();
-
-		this._content.appendChild(this._scrollableResizeDetector);
-		this._scrollableResizeDetector.contentWindow.addEventListener('resize', this._onResize);
+	_attachResizeDetector() {
+		detector.listenTo(this._scrollable, this._onResize);
+		detector.listenTo(this._content, this._onResize);
 	}
 
 	////////////////////////
@@ -318,14 +286,14 @@ export class Scrollable extends Emitter {
 	////////////////////////
 
 	/**
-	 * @param {Event} e
+	 * @param {Event} event
 	 * @protected
 	 */
-	_onResize = e => {
-		this._verticalScrollbar.update();
-		this._horizontalScrollbar.update();
-		this._emit(EVENT_SCROLLABLE.UPDATE);
-	}
+	 _onResize = raf(() => {
+		 this._verticalScrollbar.update();
+		 this._horizontalScrollbar.update();
+		 this._emit(EVENT_SCROLLABLE.UPDATE);
+	 })
 
 	////////////
 	// STATIC //
@@ -341,6 +309,9 @@ export class Scrollable extends Emitter {
 }
 
 // http://stackoverflow.com/a/2487023/1961479
+/**
+ * @returns {string}
+ */
 function generateIframeSource() {
 	if (isIE()) {
 		return 'about:blank';

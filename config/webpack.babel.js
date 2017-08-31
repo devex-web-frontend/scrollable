@@ -8,7 +8,10 @@ const stylus = {
 };
 
 export default {
-	entry: path.join(__dirname, '../test/demo.js'),
+	entry: [
+		'core-js/client/shim.min.js',
+		path.join(__dirname, '../test/demo.js')
+	],
 	output: {
 		path: path.join(__dirname, '../dist')
 	},

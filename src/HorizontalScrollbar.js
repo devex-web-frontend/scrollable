@@ -1,5 +1,4 @@
-import {AbstractScrollbar, BUTTON_SCROLL_STEP} from './AbstractScrollbar';
-import {CN_SCROLLBAR} from './AbstractScrollbar';
+import {AbstractScrollbar, BUTTON_SCROLL_STEP, CN_SCROLLBAR} from './AbstractScrollbar';
 import {modifier} from 'dx-util/src/bem/bem.js';
 import {CN_WITHHORIZONTALSCROLLBAR} from './Scrollable.constants';
 
@@ -105,8 +104,8 @@ export class HorizontalScrollbar extends AbstractScrollbar {
 		this._scrollbar.classList.add(modifier(CN_SCROLLBAR, MOD_HORIZONTAL));
 
 		//hide native scrollbar
-		this._container.style.marginBottom = -AbstractScrollbar.size.height + 'px';
-		this._container.style.height = 'calc(100% + ' + AbstractScrollbar.size.height + 'px)';
+		this._container.style.marginBottom = `${-AbstractScrollbar.size.height}px`;
+		this._container.style.height = `calc(100% + ${AbstractScrollbar.size.height}px)`;
 	}
 
 	////////////////////////

@@ -134,7 +134,16 @@ export class AbstractScrollbar {
 	 * Updates scrollbar: visibility, ratio, size, position etc.
 	 */
 	update() {
-		this._toggle(this._container.getBoundingClientRect());
+		let bounds = this._container.getBoundingClientRect();
+		const {width, height} = AbstractScrollbar.size;
+		if (width && height) {
+			bounds = {
+				...bounds,
+				width: bounds.width - width,
+				height: bounds.height - height
+			};
+		}
+		this._toggle(bounds);
 		this._ratio = this._getRatio();
 		this._updateBar();
 	}
@@ -243,64 +252,56 @@ export class AbstractScrollbar {
 	 * @param {WheelEvent} e
 	 * @protected
 	 */
-	_onTrackMouseWheel(e) {
-	};
+	_onTrackMouseWheel(e) {}
 
 	/**
 	 * @abstract
 	 * @param {MouseEvent} e
 	 * @protected
 	 */
-	_onTrackClick(e) {
-	};
+	_onTrackClick(e) {}
 
 	/**
 	 * @abstract
 	 * @param {Event} e
 	 * @protected
 	 */
-	_onButtonForwardClick(e) {
-	};
+	_onButtonForwardClick(e) {}
 
 	/**
 	 * @abstract
 	 * @param {Event} e
 	 * @protected
 	 */
-	_onButtonBackwardClick(e) {
-	};
+	_onButtonBackwardClick(e) {}
 
 	/**
 	 * @abstract
 	 * @param {Event} e
 	 * @protected
 	 */
-	_onButtonToStartClick(e) {
-	};
+	_onButtonToStartClick(e) {}
 
 	/**
 	 * @abstract
 	 * @param {Event} e
 	 * @protected
 	 */
-	_onButtonToEndClick(e) {
-	};
+	_onButtonToEndClick(e) {}
 
 	/**
 	 * @abstract
 	 * @param {MouseEvent} e
 	 * @protected
 	 */
-	_onBarDragStart(e) {
-	};
+	_onBarDragStart(e) {}
 
 	/**
 	 * @abstract
 	 * @param {MouseEvent} e
 	 * @protected
 	 */
-	_onBarDrag(e) {
-	};
+	_onBarDrag(e) {}
 
 	////////////////////////
 	// DOM EVENT HANDLERS //
@@ -422,8 +423,8 @@ function getMouseWheelEventName() {
  * @returns {Function} clearer function, removing inlined styles from DOM
  */
 function fixScrollStyles() {
-	let styleFixEl = document.createElement('style');
-	let styleFixText = `.${CN_SCROLLABLE__CONTAINER}::-webkit-scrollbar { display: none; }`;
+	const styleFixEl = document.createElement('style');
+	const styleFixText = `.${CN_SCROLLABLE__CONTAINER}::-webkit-scrollbar { display: none; }`;
 
 	styleFixEl.type = 'text/css';
 
