@@ -3,7 +3,16 @@ import {HorizontalScrollbar} from './HorizontalScrollbar';
 import {VerticalScrollbar} from './VerticalScrollbar';
 import {AbstractScrollbar} from './AbstractScrollbar';
 import {raf} from '../util/raf';
-import detectorFactory from 'element-resize-detector';
+let detectorFactory;
+if (typeof __IS_NODE__ === 'undefined') {
+	detectorFactory = require('element-resize-detector');
+} else {
+	/*eslint-disable no-empty-function*/
+	detectorFactory = (options) => ({
+		listenTo: (element, handler) => {},
+		uninstall: (element) => {}
+	});
+}
 
 const detector = detectorFactory({
 	strategy: 'scroll'
