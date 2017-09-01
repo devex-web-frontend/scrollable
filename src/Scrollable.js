@@ -4,16 +4,15 @@ import {VerticalScrollbar} from './VerticalScrollbar';
 import {AbstractScrollbar} from './AbstractScrollbar';
 import {raf} from '../util/raf';
 let detectorFactory;
-if (typeof __IS_NODE__ === 'undefined') {
-	detectorFactory = require('element-resize-detector');
-} else {
+if (typeof document === 'undefined') {
 	/*eslint-disable no-empty-function*/
 	detectorFactory = (options) => ({
 		listenTo: (element, handler) => {},
 		uninstall: (element) => {}
 	});
+} else {
+	detectorFactory = require('element-resize-detector');
 }
-
 const detector = detectorFactory({
 	strategy: 'scroll'
 });
