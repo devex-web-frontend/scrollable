@@ -3,8 +3,16 @@ import {HorizontalScrollbar} from './HorizontalScrollbar';
 import {VerticalScrollbar} from './VerticalScrollbar';
 import {AbstractScrollbar} from './AbstractScrollbar';
 import {raf} from '../util/raf';
-import detectorFactory from 'element-resize-detector';
-
+let detectorFactory;
+if (typeof document === 'undefined') {
+	/*eslint-disable no-empty-function*/
+	detectorFactory = (options) => ({
+		listenTo: (element, handler) => {},
+		uninstall: (element) => {}
+	});
+} else {
+	detectorFactory = require('element-resize-detector');
+}
 const detector = detectorFactory({
 	strategy: 'scroll'
 });
@@ -152,7 +160,8 @@ export class Scrollable extends Emitter {
 			throw new Error('Scrollable is closed');
 		}
 		if (!this._isDetached) {
-			this.dispose();
+			detector.uninstall(this._scrollable);
+			detector.uninstall(this._content);
 			this._isDetached = true;
 		}
 	}
