@@ -161,7 +161,8 @@ export class Scrollable extends Emitter {
 			throw new Error('Scrollable is closed');
 		}
 		if (!this._isDetached) {
-			this.dispose();
+			detector.uninstall(this._scrollable);
+			detector.uninstall(this._content);
 			this._isDetached = true;
 		}
 	}
