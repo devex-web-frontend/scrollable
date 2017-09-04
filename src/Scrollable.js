@@ -198,7 +198,6 @@ export class Scrollable extends Emitter {
 			throw new Error('Cannot close detached scrollable because parentElement is not accessible to restore ' +
 				'default dom structure');
 		}
-		this.dispose();
 
 		//dispose scrollbars
 		this._horizontalScrollbar.close();
